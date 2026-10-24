@@ -106,7 +106,6 @@ public class MinimapPixelsCustomDrawOp : ICustomDrawOperation
         using var paint = new SKPaint
         {
             IsAntialias = true,
-            FilterQuality = SKFilterQuality.Medium,
             IsDither = false,
             Color = SKColors.White,
             Style = SKPaintStyle.Fill,
@@ -126,8 +125,9 @@ public class MinimapPixelsCustomDrawOp : ICustomDrawOperation
             canvas.DrawBitmap(
                 tile,
                 new SKRect(0, 0, tile.Width, tile.Height),
-                new SKRect((int)xOffset, (int)yOffset, (int)width, (int)height)
-                );
+                new SKRect((int)xOffset, (int)yOffset, (int)width, (int)height),
+                new SKSamplingOptions(SKFilterMode.Linear, SKMipmapMode.Linear),
+                paint);
         }
 
         canvas.Restore();

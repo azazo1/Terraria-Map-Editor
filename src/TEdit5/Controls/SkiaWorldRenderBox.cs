@@ -454,8 +454,9 @@ public class SkiaWorldRenderBox : TemplatedControl, IScrollable
 
         // "No Skia" text for unsupported platforms
         var text = "Current rendering API is not Skia";
-        var glyphs = text.Select(ch => Typeface.Default.GlyphTypeface.GetGlyph(ch)).ToArray();
-        _noSkia = new GlyphRun(Typeface.Default.GlyphTypeface, 12, text.AsMemory(), glyphs);
+        var glyphTypeface = Typeface.Default.GlyphTypeface;
+        var glyphs = text.Select(ch => glyphTypeface.CharacterToGlyphMap.TryGetValue(ch, out var glyph) ? glyph : (ushort)0).ToArray();
+        _noSkia = new GlyphRun(glyphTypeface, 12, text.AsMemory(), glyphs);
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -965,6 +966,9 @@ public class SkiaWorldRenderBox : TemplatedControl, IScrollable
 
     /// <inheritdoc />
     public Size Viewport => this.Bounds.Size;
+    public bool CanHorizontallyScroll { get; set; } = true;
+
+    public bool CanVerticallyScroll { get; set; } = true;
     #endregion
 
     #region Properties

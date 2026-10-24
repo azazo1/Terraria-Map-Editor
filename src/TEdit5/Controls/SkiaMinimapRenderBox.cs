@@ -29,8 +29,9 @@ public class SkiaMinimapRenderBox : Control
 
         // "No Skia" text for unsupported platforms
         var text = "Current rendering API is not Skia";
-        var glyphs = text.Select(ch => Typeface.Default.GlyphTypeface.GetGlyph(ch)).ToArray();
-        _noSkia = new GlyphRun(Typeface.Default.GlyphTypeface, 12, text.AsMemory(), glyphs);
+        var glyphTypeface = Typeface.Default.GlyphTypeface;
+        var glyphs = text.Select(ch => glyphTypeface.CharacterToGlyphMap.TryGetValue(ch, out var glyph) ? glyph : (ushort)0).ToArray();
+        _noSkia = new GlyphRun(glyphTypeface, 12, text.AsMemory(), glyphs);
     }
 
     public override void Render(DrawingContext context)

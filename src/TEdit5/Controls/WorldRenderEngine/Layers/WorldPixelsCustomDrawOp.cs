@@ -185,7 +185,6 @@ public class WorldPixelsCustomDrawOp : ICustomDrawOperation
     SKPaint _bitmapPaint = new SKPaint
     {
         IsAntialias = false,
-        FilterQuality = SKFilterQuality.None,
         IsDither = false,
         Color = SKColors.White,
         Style = SKPaintStyle.Fill,
@@ -269,6 +268,7 @@ public class WorldPixelsCustomDrawOp : ICustomDrawOperation
                         tile.Bitmap,
                         new SKRect(0, 0, tile.Bitmap.Width, tile.Bitmap.Height),
                         canvasRect,
+                        new SKSamplingOptions(SKFilterMode.Nearest, SKMipmapMode.None),
                         _bitmapPaint);
                 }
 
