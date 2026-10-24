@@ -1,0 +1,36 @@
+name: build-tedit5-macos
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build-macos-arm64:
+    runs-on: macos-15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Restore
+        run: dotnet restore src/TEdit5/TEdit5.csproj -r osx-arm64
+
+      - name: Publish
+        run: dotnet publish src/TEdit5/TEdit5.csproj -c Release -r osx-arm64 --self-contained true -p:PublishSingleFile=true -o out/osx-arm64
+
+      - name: Verify Mach-O
+        run: |
+          set -euo pipefail
+          file out/osx-arm64/TEdit5
+          file out/osx-arm64/TEdit5 | grep -q "Mach-O 64-bit executable arm64"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: TEdit5-osx-arm64
+          path: out/osx-arm64
+          retention-days: 14
