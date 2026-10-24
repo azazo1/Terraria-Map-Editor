@@ -455,7 +455,7 @@ public class SkiaWorldRenderBox : TemplatedControl, IScrollable
         // "No Skia" text for unsupported platforms
         var text = "Current rendering API is not Skia";
         var glyphTypeface = Typeface.Default.GlyphTypeface;
-        var glyphs = text.Select(ch => glyphTypeface.CharacterToGlyphMap.TryGetValue(ch, out var glyph) ? glyph : (ushort)0).ToArray();
+        var glyphs = text.Select(ch => glyphTypeface.CharacterToGlyphMap.TryGetGlyph(ch, out var glyph) ? glyph : (ushort)0).ToArray();
         _noSkia = new GlyphRun(glyphTypeface, 12, text.AsMemory(), glyphs);
     }
 
