@@ -28,9 +28,22 @@ jobs:
           file out/osx-arm64/TEdit5
           file out/osx-arm64/TEdit5 | grep -q "Mach-O 64-bit executable arm64"
 
-      - name: Upload artifact
+      - name: Smoke test
+        run: ./out/osx-arm64/TEdit5 --smoke-test
+
+      - name: Package app and dmg
+        run: ./scripts/make-macos-bundle.sh out/osx-arm64 dist
+
+      - name: Upload app bundle
         uses: actions/upload-artifact@v4
         with:
-          name: TEdit5-osx-arm64
-          path: out/osx-arm64
+          name: TEdit5-osx-arm64-app
+          path: dist/TEdit5.app
+          retention-days: 14
+
+      - name: Upload dmg
+        uses: actions/upload-artifact@v4
+        with:
+          name: TEdit5-osx-arm64-dmg
+          path: dist/TEdit5-osx-arm64.dmg
           retention-days: 14
