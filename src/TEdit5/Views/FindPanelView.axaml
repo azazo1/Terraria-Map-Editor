@@ -1,0 +1,65 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:TEdit5.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="440" d:DesignHeight="600"
+             x:Class="TEdit5.Views.FindPanelView"
+             x:CompileBindings="False">
+    <!-- 移植自 TEdit/View/Sidebar/FindSidebarView.xaml, 精灵查找暂缺 -->
+    <DockPanel Background="#2D2D2D">
+
+        <TextBlock DockPanel.Dock="Top" Text="查找" FontSize="16" FontWeight="SemiBold" Margin="8,6" />
+
+        <!-- 查找条件 -->
+        <StackPanel DockPanel.Dock="Top" Margin="8" Spacing="6">
+            <TextBlock Text="{Binding Find.SelectionSummary}" Foreground="#AAAAAA" TextWrapping="Wrap" />
+
+            <TabControl SelectedIndex="{Binding Find.SelectedTabIndex, Mode=TwoWay}">
+                <TabItem Header="箱子">
+                    <TextBox Margin="4" Text="{Binding Find.SearchText, Mode=TwoWay}"
+                             PlaceholderText="箱子名称关键字, 留空表示全部" />
+                </TabItem>
+                <TabItem Header="方块">
+                    <TextBox Margin="4" Text="{Binding Find.SearchText, Mode=TwoWay}"
+                             PlaceholderText="方块编号" />
+                </TabItem>
+                <TabItem Header="墙体">
+                    <TextBox Margin="4" Text="{Binding Find.SearchText, Mode=TwoWay}"
+                             PlaceholderText="墙体编号" />
+                </TabItem>
+                <TabItem Header="精灵">
+                    <TextBlock Margin="4" TextWrapping="Wrap" Opacity="0.7" Text="精灵查找尚未移植" />
+                </TabItem>
+            </TabControl>
+
+            <Grid ColumnDefinitions="*,Auto">
+                <Button Grid.Column="0" Content="查找世界" Margin="0,0,8,0" Padding="12,6"
+                        HorizontalAlignment="Stretch"
+                        Command="{Binding Find.ExecuteSearchCommand}" />
+                <Button Grid.Column="1" Content="清除" Padding="12,6"
+                        Command="{Binding Find.ClearCommand}" />
+            </Grid>
+        </StackPanel>
+
+        <!-- 结果与导航 -->
+        <StackPanel DockPanel.Dock="Bottom" Margin="8" Spacing="6">
+            <Grid ColumnDefinitions="Auto,*,Auto">
+                <Button Grid.Column="0" Content="上一个" Padding="8,4" Command="{Binding Find.NavigatePreviousCommand}" />
+                <TextBlock Grid.Column="1" Text="{Binding Find.Summary}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                <Button Grid.Column="2" Content="下一个" Padding="8,4" Command="{Binding Find.NavigateNextCommand}" />
+            </Grid>
+        </StackPanel>
+
+        <ListBox ItemsSource="{Binding Find.Results}"
+                 SelectedItem="{Binding Find.SelectedResult, Mode=TwoWay}"
+                 MinHeight="150"
+                 Background="Transparent" BorderThickness="1" BorderBrush="#3F3F46">
+            <ListBox.ItemTemplate>
+                <DataTemplate x:DataType="vm:FindResult">
+                    <TextBlock Text="{Binding DisplayText}" Margin="4,2" />
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </DockPanel>
+</UserControl>

@@ -1,0 +1,38 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:terraria="using:TEdit.Terraria"
+             mc:Ignorable="d" d:DesignWidth="440" d:DesignHeight="600"
+             x:Class="TEdit5.Views.TileEntityExaminerView"
+             x:CompileBindings="False">
+    <!-- 移植自 TEdit/View/Sidebar/TileEntityExaminer.xaml -->
+    <DockPanel Background="#2D2D2D">
+
+        <TextBlock DockPanel.Dock="Top" Text="图格实体" FontSize="16" FontWeight="SemiBold" Margin="8,6" />
+
+        <ListBox ItemsSource="{Binding World.TileEntities}" MinHeight="100"
+                 Background="Transparent" BorderThickness="0">
+            <ListBox.ItemTemplate>
+                <DataTemplate x:DataType="terraria:TileEntity">
+                    <StackPanel Orientation="Horizontal" Spacing="2">
+                        <TextBlock Text="X" VerticalAlignment="Center" Foreground="#AAAAAA" />
+                        <TextBox Width="60" Text="{Binding PosX, Mode=TwoWay}" />
+                        <TextBlock Text="Y" VerticalAlignment="Center" Foreground="#AAAAAA" />
+                        <TextBox Width="60" Text="{Binding PosY, Mode=TwoWay}" />
+                        <TextBlock Text="ID" VerticalAlignment="Center" Foreground="#AAAAAA" />
+                        <TextBox Width="50" Text="{Binding Id, Mode=TwoWay}" />
+                        <TextBlock Text="NetID" VerticalAlignment="Center" Foreground="#AAAAAA" />
+                        <TextBox Width="60" Text="{Binding NetId, Mode=TwoWay}" />
+                        <TextBlock Text="数量" VerticalAlignment="Center" Foreground="#AAAAAA" />
+                        <TextBox Width="50" Text="{Binding StackSize, Mode=TwoWay}" />
+                        <TextBlock Text="前缀" VerticalAlignment="Center" Foreground="#AAAAAA" />
+                        <TextBox Width="50" Text="{Binding Prefix, Mode=TwoWay}" />
+                        <TextBlock Text="物品" VerticalAlignment="Center" Foreground="#AAAAAA" />
+                        <TextBlock Text="{Binding Items.Count}" VerticalAlignment="Center" Width="30" />
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </DockPanel>
+</UserControl>

@@ -239,6 +239,27 @@ public class WorldEditor : IDisposable
         }
     }
 
+    /// <summary>读取世界里的方块, 供吸取工具这类只读访问使用.</summary>
+    public Tile GetTileAt(int x, int y)
+    {
+        if (_world == null || x < 0 || y < 0 || x >= _world.TilesWide || y >= _world.TilesHigh)
+        {
+            return default;
+        }
+
+        return _world.Tiles[x, y];
+    }
+
+    /// <summary>
+    /// 记录撤销并绘制单个方块. UI 工具应当调用这个方法, 而不是直接 SetPixel,
+    /// 否则撤销栈里不会有这一笔.
+    /// </summary>
+    public void PaintPixel(int x, int y, PaintMode? mode = null, bool? erase = null)
+    {
+        _undo?.SaveTile(_world, x, y);
+        SetPixel(x, y, mode, erase);
+    }
+
     private int GetTileIndex(int x, int y)
     {
         return x + y * _world.TilesWide;

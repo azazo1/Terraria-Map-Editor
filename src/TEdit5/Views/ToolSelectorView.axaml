@@ -1,0 +1,32 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:TEdit5.ViewModels"
+             xmlns:c="clr-namespace:TEdit5.Controls"
+             mc:Ignorable="d" d:DesignWidth="36" d:DesignHeight="400"
+             x:Class="TEdit5.Views.ToolSelectorView"
+             x:CompileBindings="False">
+    <ItemsControl ItemsSource="{Binding Tools}">
+        <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+                <StackPanel Orientation="Horizontal" />
+            </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+        <ItemsControl.ItemTemplate>
+            <DataTemplate>
+                <ToggleButton Width="30" Height="28" Margin="1" Padding="0" CornerRadius="6"
+                              ToolTip.Tip="{Binding Tooltip}"
+                              IsChecked="{Binding IsActive, Mode=OneWay}"
+                              Click="OnToolClick">
+                    <Panel>
+                        <Image Width="18" Height="18" Source="{Binding IconBitmap}"
+                               IsVisible="{Binding HasBitmapIcon}" />
+                        <PathIcon Data="{Binding Icon}" Width="18" Height="18" Foreground="#CCCCCC"
+                                  IsVisible="{Binding !HasBitmapIcon}" />
+                    </Panel>
+                </ToggleButton>
+            </DataTemplate>
+        </ItemsControl.ItemTemplate>
+    </ItemsControl>
+</UserControl>

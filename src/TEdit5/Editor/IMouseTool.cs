@@ -1,152 +1,39 @@
-﻿using Avalonia;
+using Avalonia;
 using Avalonia.Input;
+using Avalonia.Media;
 using Avalonia.Rendering.SceneGraph;
-using TEdit5.Services;
+using TEdit5.Controls;
 using TEdit.Editor;
-using TEdit.Geometry;
 
 namespace TEdit5.Editor;
 
+/// <summary>
+/// 世界视图上的鼠标工具. 与 Windows 版的 IEditorTool 对应, 但直接接收世界坐标,
+/// 由渲染控件把屏幕坐标换算好再传进来.
+/// </summary>
 public interface IMouseTool
 {
     ICustomDrawOperation? DrawTool { get; }
+
     string Name { get; }
+
     string Tooltip { get; }
+
     bool IsActive { get; set; }
+
+    /// <summary>工具条上显示的图标名, 保留给以后接入图标字体.</summary>
     string IconName { get; }
+
+    /// <summary>工具条图标, 使用矢量路径绘制.</summary>
+    Geometry Icon { get; }
+
     void Move(WorldEditor editor, PointerPoint buttons, Point worldCoordinate) { }
+
     void Press(WorldEditor editor, PointerPoint buttons, Point worldCoordinate) { }
+
     void Release(WorldEditor editor, PointerPoint buttons, Point worldCoordinate) { }
+
     void LeaveWindow(WorldEditor editor, PointerPoint buttons, Point worldCoordinate) { }
+
     void Scroll(int delta, Point worldCoordinate) { }
-}
-
-public partial class BrushTool : ReactiveObject, IMouseTool
-{
-    public ICustomDrawOperation? DrawTool { get; }
-    public string Name { get; } = "Brush";
-    public string Tooltip { get; } = "Brush Tool";
-    [Reactive] private bool _isActive;
-    public string IconName { get; } = "mdi-brush";
-}
-
-public partial class ArrowTool : ReactiveObject, IMouseTool
-{
-    public ICustomDrawOperation? DrawTool { get; }
-    public string Name { get; } = "Arrow";
-    public string Tooltip { get; } = "Arrow Tool";
-    [Reactive] private bool _isActive;
-    public string IconName { get; } = "mdi-cursor-default";
-}
-
-public partial class SelectTool : ReactiveObject, IMouseTool
-{
-    public ICustomDrawOperation? DrawTool { get; }
-    public string Name { get; } = "Select";
-    public string Tooltip { get; } = "Select Tool";
-    [Reactive] private bool _isActive;
-    public string IconName { get; } = "mdi-select";
-}
-
-public partial class PencilTool : ReactiveObject, IMouseTool
-{
-    private readonly IDocumentService _documentService;
-
-    public PencilTool(IDocumentService documentService)
-    {
-        _documentService = documentService;
-    }
-
-    public ICustomDrawOperation? DrawTool { get; }
-    public string Name { get; } = "Pencil";
-    public string Tooltip { get; } = "Pencil Tool";
-    [Reactive] private bool _isActive;
-    public string IconName { get; } = "mdi-pencil";
-
-    private bool _isLeftDown;
-    private bool _isRightDown;
-    private Vector2Int32 _startPoint;
-    private Vector2Int32 _endPoint;
-    private WorldEditor _editor;
-
-    private void CheckDirectionandDraw(Vector2Int32 tile)
-    {
-        Vector2Int32 p = tile;
-        Vector2Int32 p2 = tile;
-        if (_isRightDown)
-        {
-            if (_isLeftDown)
-                p.X = _startPoint.X;
-            else
-                p.Y = _startPoint.Y;
-
-            DrawLine(p);
-            _startPoint = p;
-            System.Diagnostics.Debug.WriteLine($"Update _startpoint {_startPoint} CheckDirectionandDraw _isRightDown");
-        }
-        else if (_isLeftDown)
-        {
-            DrawLine(p);
-            _startPoint = p;
-            System.Diagnostics.Debug.WriteLine($"Update _startpoint {_startPoint} CheckDirectionandDraw _isLeftDown");
-            _endPoint = p;
-        }
-    }
-
-    private void DrawLine(Vector2Int32 to)
-    {
-        foreach (Vector2Int32 pixel in Shape.DrawLineTool(_startPoint, to))
-        {
-            _editor.SetPixel(pixel.X, pixel.Y);
-            //BlendRules.ResetUVCache(_wvm, pixel.X, pixel.Y, 1, 1);
-        }
-    }
-
-    private void DrawLineP2P(Vector2Int32 endPoint)
-    {
-        foreach (Vector2Int32 pixel in Shape.DrawLineTool(_startPoint, _endPoint))
-        {
-            _editor.SetPixel(pixel.X, pixel.Y);
-        }
-    }
-
-    public void Press(WorldEditor editor, PointerPoint buttons, Point worldCoordinate)
-    {
-        _editor = editor;
-        _editor.BeginOperationAsync().Wait();
-
-        if (!_isRightDown && !_isLeftDown)
-        {
-            _startPoint = new Vector2Int32((int)worldCoordinate.X, (int)worldCoordinate.Y);
-        }
-
-        _isLeftDown = buttons.Properties.IsLeftButtonPressed;
-        _isRightDown = buttons.Properties.IsRightButtonPressed;
-
-        CheckDirectionandDraw(new Vector2Int32((int)worldCoordinate.X, (int)worldCoordinate.Y));
-    }
-
-    public void Move(WorldEditor editor, PointerPoint buttons, Point worldCoordinate)
-    {
-        _isLeftDown = buttons.Properties.IsLeftButtonPressed;
-        _isRightDown = buttons.Properties.IsRightButtonPressed;
-
-        CheckDirectionandDraw(new Vector2Int32((int)worldCoordinate.X, (int)worldCoordinate.Y));
-    }
-    public void Release(WorldEditor editor, PointerPoint buttons, Point worldCoordinate)
-    {
-        CheckDirectionandDraw(new Vector2Int32((int)worldCoordinate.X, (int)worldCoordinate.Y));
-
-        _isLeftDown = buttons.Properties.IsLeftButtonPressed;
-        _isRightDown = buttons.Properties.IsRightButtonPressed;
-
-        if (!_isLeftDown && !_isRightDown)
-        {
-            _editor.EndOperationAsync().Wait();
-        }
-    }
-
-    public void LeaveWindow(WorldEditor editor, PointerPoint buttons, Point worldCoordinate)
-    {
-    }
 }

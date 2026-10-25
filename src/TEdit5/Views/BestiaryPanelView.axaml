@@ -1,0 +1,55 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:TEdit5.ViewModels"
+             xmlns:controls="using:TEdit5.Controls"
+             mc:Ignorable="d" d:DesignWidth="440" d:DesignHeight="600"
+             x:Class="TEdit5.Views.BestiaryPanelView"
+             x:CompileBindings="False">
+    <!-- 移植自 TEdit/View/Sidebar/BestiaryEditor.xaml, 图标与五角星控件暂缺 -->
+    <DockPanel Background="#2D2D2D">
+
+        <TextBlock DockPanel.Dock="Top" Text="图鉴" FontSize="16" FontWeight="SemiBold" Margin="8,6" />
+
+        <UniformGrid DockPanel.Dock="Top" Columns="5" Margin="4,0">
+            <Button Content="加载" Margin="2" Padding="6,4" Command="{Binding Bestiary.LoadCommand}" />
+            <Button Content="重置" Margin="2" Padding="6,4" Command="{Binding Bestiary.ResetCommand}" />
+            <Button Content="补全" Margin="2" Padding="6,4" Command="{Binding Bestiary.CompleteCommand}" />
+            <Button Content="保存" Margin="2" Padding="6,4" Command="{Binding Bestiary.SaveCommand}" />
+            <Button Content="统计" Margin="2" Padding="6,4" Command="{Binding Bestiary.UpdateKillTallyCommand}" />
+        </UniformGrid>
+
+        <Grid DockPanel.Dock="Top" Margin="2" ColumnDefinitions="Auto,*,Auto">
+            <TextBlock Grid.Column="0" Text="过滤" VerticalAlignment="Center" Margin="4,0" />
+            <TextBox Grid.Column="1" Margin="2" Text="{Binding Bestiary.FilterText, Mode=TwoWay}" />
+            <CheckBox Grid.Column="2" Content="只看已解锁" Margin="4,0" VerticalAlignment="Center"
+                      IsChecked="{Binding Bestiary.OnlyUnlocked, Mode=TwoWay}" />
+        </Grid>
+
+        <ListBox ItemsSource="{Binding Bestiary.Entries}"
+                 Background="Transparent" BorderThickness="0">
+            <ListBox.ItemTemplate>
+                <DataTemplate x:DataType="vm:BestiaryEntry">
+                    <Grid ColumnDefinitions="60,Auto,110,110,*,50">
+                        <NumericUpDown Grid.Column="0" Minimum="0" Maximum="99999" Increment="1" FormatString="0" Margin="2"
+                                       IsEnabled="{Binding CanKill}"
+                                       Value="{Binding Defeated, Mode=TwoWay}" />
+                        <CheckBox Grid.Column="1" Content="近距" FontSize="11" Margin="2,0"
+                                  IsEnabled="{Binding CanNear}"
+                                  IsChecked="{Binding Near, Mode=TwoWay}" />
+                        <CheckBox Grid.Column="2" Content="交谈" FontSize="11" Margin="2,0"
+                                  IsEnabled="{Binding CanTalk}"
+                                  IsChecked="{Binding Talked, Mode=TwoWay}" />
+                        <TextBlock Grid.Column="3" Text="{Binding Name}" Margin="2" VerticalAlignment="Center"
+                                   TextTrimming="CharacterEllipsis" />
+                        <TextBlock Grid.Column="4" Text="{Binding BestiaryIndex, StringFormat='# {0}'}" Margin="2"
+                                   VerticalAlignment="Center" Foreground="#AAAAAA" FontSize="11" />
+                        <controls:StarRating Grid.Column="5" Margin="2" VerticalAlignment="Center"
+                                             Value="{Binding BestiaryStars}" MaxValue="5" StarSize="6" />
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </DockPanel>
+</UserControl>

@@ -1,0 +1,33 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:TEdit5.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="360" d:DesignHeight="260"
+             x:Class="TEdit5.Controls.ItemPickerView"
+             xmlns:ctl="using:TEdit5.Controls"
+             x:CompileBindings="False">
+    <!-- 可搜索的物品选择器, 对应原版 ItemEditorControl 的编号选择部分 -->
+    <DockPanel>
+        <TextBox DockPanel.Dock="Top" Margin="2" PlaceholderText="搜索物品名字或编号"
+                 Text="{Binding $parent[UserControl].SearchText, Mode=TwoWay}" />
+
+        <ListBox x:Name="ItemList" Margin="2" ItemsSource="{Binding $parent[UserControl].Entries}"
+                 Background="Transparent" BorderThickness="0">
+            <ListBox.ItemTemplate>
+                <DataTemplate x:DataType="vm:PaletteItem">
+                    <Grid ColumnDefinitions="Auto,*,70">
+                        <Panel Grid.Column="0" Width="16" Height="16" Margin="2" VerticalAlignment="Center">
+                            <Border Background="{Binding Brush}" BorderThickness="1" BorderBrush="#666666" />
+                            <Image Source="{Binding Icon}" Stretch="Uniform" />
+                        </Panel>
+                        <TextBlock Grid.Column="1" Text="{Binding Name}" Margin="4,2"
+                                   TextTrimming="CharacterEllipsis" />
+                        <TextBlock Grid.Column="2" Text="{Binding Id, StringFormat='[{0}]'}" Margin="2"
+                                   Foreground="#AAAAAA" FontSize="11" />
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </DockPanel>
+</UserControl>

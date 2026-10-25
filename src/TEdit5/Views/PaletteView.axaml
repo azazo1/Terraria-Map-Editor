@@ -1,0 +1,47 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:TEdit5.ViewModels"
+             xmlns:v="using:TEdit5.Views"
+             mc:Ignorable="d" d:DesignWidth="440" d:DesignHeight="600"
+             x:Class="TEdit5.Views.PaletteView"
+             x:CompileBindings="False">
+    <!-- 移植自 TEdit/View/Sidebar/PaletteSidebarView.xaml -->
+    <DockPanel Background="#2D2D2D">
+
+        <!-- 标题 -->
+        <TextBlock DockPanel.Dock="Top" Text="调色板" FontSize="16" FontWeight="SemiBold"
+                   Margin="8,6" />
+
+        <!-- 底部操作按钮 -->
+        <Border DockPanel.Dock="Bottom" Margin="4,0,4,4" Padding="6,4" CornerRadius="4"
+                Background="#333333" BorderBrush="#3F3F46" BorderThickness="1">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="4">
+                <Button Content="全部替换" Padding="12,4" FontSize="11"
+                        ToolTip.Tip="把匹配的方块替换到整个世界"
+                        Command="{Binding ReplaceAllCommand}" />
+                <Button Content="替换选区" Padding="12,4" FontSize="11"
+                        ToolTip.Tip="只在当前选区内替换"
+                        IsEnabled="{Binding Selection.IsActive}"
+                        Command="{Binding ReplaceSelectionCommand}" />
+            </StackPanel>
+        </Border>
+
+        <TabControl DockPanel.Dock="Top">
+            <!-- 方块 -->
+            <TabItem Header="方块">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <Border CornerRadius="4" Margin="4" VerticalAlignment="Top" Background="#333333">
+                        <v:TilePickerPanelView Margin="4,0" />
+                    </Border>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- 蒙版 -->
+            <TabItem Header="蒙版">
+                <v:MaskSidebarView />
+            </TabItem>
+        </TabControl>
+    </DockPanel>
+</UserControl>

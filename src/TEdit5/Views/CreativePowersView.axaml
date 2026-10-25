@@ -1,0 +1,45 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="440" d:DesignHeight="600"
+             x:Class="TEdit5.Views.CreativePowersView"
+             x:CompileBindings="False">
+    <!-- 移植自 TEdit/View/Sidebar/CreativePowers.xaml -->
+    <DockPanel Background="#2D2D2D">
+
+        <TextBlock DockPanel.Dock="Top" Text="创意能力" FontSize="16" FontWeight="SemiBold" Margin="8,6" />
+
+        <UniformGrid DockPanel.Dock="Top" Columns="2" Margin="4,0">
+            <Button Content="刷新" Margin="2" Padding="6,4" Command="{Binding Creative.LoadCommand}" />
+            <Button Content="保存" Margin="2" Padding="6,4" Command="{Binding Creative.SaveCommand}" />
+        </UniformGrid>
+
+        <StackPanel Margin="8" Spacing="6">
+            <TextBlock Text="冻结与开关" FontWeight="Bold" Margin="0,6,0,2" />
+
+            <CheckBox Content="冻结时间" IsChecked="{Binding Creative.IsTimeFrozen, Mode=TwoWay}" />
+            <CheckBox Content="冻结下雨" IsChecked="{Binding Creative.IsRainFrozen, Mode=TwoWay}" />
+            <CheckBox Content="冻结风力" IsChecked="{Binding Creative.IsWindFrozen, Mode=TwoWay}" />
+            <CheckBox Content="冻结生物群落蔓延" IsChecked="{Binding Creative.IsBiomeSpreadFrozen, Mode=TwoWay}" />
+
+            <TextBlock Text="难度与时间流速" FontWeight="Bold" Margin="0,10,0,2" />
+
+            <CheckBox Content="启用难度调整" IsChecked="{Binding Creative.EnableDifficulty, Mode=TwoWay}" />
+            <Grid ColumnDefinitions="*,Auto">
+                <Slider Grid.Column="0" Minimum="0" Maximum="1" SmallChange="0.3333333"
+                        Value="{Binding Creative.Difficulty, Mode=TwoWay}" />
+                <TextBlock Grid.Column="1" Width="40" VerticalAlignment="Center" TextAlignment="Right"
+                           Text="{Binding Creative.Difficulty, StringFormat='{}{0:0.0}'}" />
+            </Grid>
+
+            <CheckBox Content="启用时间流速" IsChecked="{Binding Creative.EnableTimeSpeed, Mode=TwoWay}" />
+            <Grid ColumnDefinitions="*,Auto">
+                <Slider Grid.Column="0" Minimum="0" Maximum="1" SmallChange="0.3333333"
+                        Value="{Binding Creative.TimeSpeed, Mode=TwoWay}" />
+                <TextBlock Grid.Column="1" Width="40" VerticalAlignment="Center" TextAlignment="Right"
+                           Text="{Binding Creative.TimeSpeed, StringFormat='{}{0:0.0}'}" />
+            </Grid>
+        </StackPanel>
+    </DockPanel>
+</UserControl>

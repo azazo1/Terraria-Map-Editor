@@ -10,6 +10,9 @@ namespace TEdit5.Controls.WorldRenderEngine.Layers;
 
 public class BackgroundGridCustomDrawOp : ICustomDrawOperation
 {
+    /// <summary>是否绘制背景网格, 由视图菜单切换.</summary>
+    public static bool Visible { get; set; } = true;
+
     private SKPaint _rowPaint;
     private SKPaint _altPaint;
     private readonly int _cellSize = 16;

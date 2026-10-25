@@ -22,6 +22,9 @@ public partial class ToolSelectionViewModel : ReactiveObject
         SetTool(Tools.FirstOrDefault(t => t.Name == "Arrow"));
     }
 
+    /// <summary>供视图点击时切换工具.</summary>
+    public void Select(IMouseTool? tool) => SetTool(tool);
+
     private void SetTool(IMouseTool? tool)
     {
         // deactivate previous tool

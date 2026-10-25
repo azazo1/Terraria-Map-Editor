@@ -1,0 +1,37 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:TEdit5.ViewModels"
+             xmlns:v="using:TEdit5.Views"
+             mc:Ignorable="d" d:DesignWidth="420" d:DesignHeight="640"
+             x:Class="TEdit5.Views.MaskSidebarView"
+             x:CompileBindings="False">
+    <!-- 移植自 TEdit/View/Sidebar/PaletteSidebarView.xaml 的蒙版页 -->
+    <DockPanel>
+
+        <!-- 蒙版模式切换 -->
+        <Border DockPanel.Dock="Top" Margin="4" Padding="6,4" CornerRadius="4"
+                Background="#333333" BorderBrush="#3F3F46" BorderThickness="1">
+            <Grid ColumnDefinitions="Auto,*,Auto">
+                <StackPanel Grid.Column="0" Orientation="Horizontal">
+                    <RadioButton GroupName="MaskPreset" Content="关闭" Padding="8,3" Margin="0,0,2,0" FontSize="11"
+                                 IsChecked="{Binding MaskPresetOff, Mode=TwoWay}" />
+                    <RadioButton GroupName="MaskPreset" Content="精确匹配" Padding="8,3" Margin="0,0,2,0" FontSize="11"
+                                 IsChecked="{Binding MaskPresetExactMatch, Mode=TwoWay}" />
+                    <RadioButton GroupName="MaskPreset" Content="自定义" Padding="8,3" FontSize="11"
+                                 IsChecked="{Binding MaskPresetCustom, Mode=TwoWay}" />
+                </StackPanel>
+                <Button Grid.Column="2" Content="清空全部" Padding="8,3" FontSize="11"
+                        Click="OnClearAllClick" />
+            </Grid>
+        </Border>
+
+        <!-- 可滚动的蒙版选项 -->
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <Border CornerRadius="4" Margin="4" VerticalAlignment="Top" Background="#333333">
+                <v:MaskOptionsPanelView Margin="4,0" />
+            </Border>
+        </ScrollViewer>
+    </DockPanel>
+</UserControl>

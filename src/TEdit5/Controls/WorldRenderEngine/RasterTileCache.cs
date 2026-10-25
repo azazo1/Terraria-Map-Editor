@@ -67,6 +67,34 @@ public class RasterTileCache : IRasterTileCache
         return tileIndex;
     }
 
+    /// <summary>
+    /// 把一个方块矩形标脏, 每个受影响的缓存块只标一次.
+    /// </summary>
+    public void SetWorldRegionDirty(int x, int y, int width, int height)
+    {
+        if (width <= 0 || height <= 0)
+        {
+            return;
+        }
+
+        int tx0 = Math.Max(0, x / TileSizeX);
+        int ty0 = Math.Max(0, y / TileSizeY);
+        int tx1 = Math.Min(TilesX - 1, (x + width - 1) / TileSizeX);
+        int ty1 = Math.Min(TilesY - 1, (y + height - 1) / TileSizeY);
+
+        for (int ty = ty0; ty <= ty1; ty++)
+        {
+            for (int tx = tx0; tx <= tx1; tx++)
+            {
+                int tileIndex = ty * TilesX + tx;
+                if (tileIndex >= 0 && tileIndex < _tiles.Length && _tiles[tileIndex] != null)
+                {
+                    _tiles[tileIndex].IsDirty = true;
+                }
+            }
+        }
+    }
+
     public void SetPixelDirty(int x, int y)
     {
         (int tileIndex, int tilePixelX, int tilePixelY) = PixelToTilePixelIndex(x, y);

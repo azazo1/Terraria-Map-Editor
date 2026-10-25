@@ -1,0 +1,64 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:TEdit5.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="440" d:DesignHeight="600"
+             x:Class="TEdit5.Views.NpcEditorView"
+             x:CompileBindings="False">
+    <!-- 移植自 TEdit/View/Sidebar/NpcNameEditor.xaml, 精灵图预览暂缺 -->
+    <DockPanel Background="#2D2D2D">
+
+        <TextBlock DockPanel.Dock="Top" Text="NPC 名称" FontSize="16" FontWeight="SemiBold" Margin="8,6" />
+        <TextBlock DockPanel.Dock="Top" Margin="6,0,6,4" Opacity="0.7" TextWrapping="Wrap"
+                   Text="点 + 号把 NPC 加进世界, 点 - 号移除, 右键定位到地图上的位置" />
+        <Grid DockPanel.Dock="Top" Margin="6,0,6,6" ColumnDefinitions="*,Auto">
+            <TextBox Grid.Column="0" PlaceholderText="搜索 NPC"
+                     Text="{Binding NpcEditor.SearchText, Mode=TwoWay}" />
+            <CheckBox Grid.Column="1" Content="只看已存在" Margin="6,0,0,0" VerticalAlignment="Center"
+                      IsChecked="{Binding NpcEditor.OnlyOnMap, Mode=TwoWay}" />
+        </Grid>
+
+        <ListBox MinHeight="100" ItemsSource="{Binding NpcEditor.Npcs}"
+                 Background="Transparent" BorderThickness="0">
+            <ListBox.ItemTemplate>
+                <DataTemplate x:DataType="vm:NpcEntry">
+                    <Grid ColumnDefinitions="Auto,Auto,*,Auto,64" Background="Transparent">
+                        <Image Grid.Column="0" Width="24" Height="24" Margin="2,0,0,0"
+                               Stretch="Uniform" VerticalAlignment="Center"
+                               Source="{Binding IconBitmap}" />
+                        <Panel Grid.Column="1">
+                            <Button Grid.Column="0" Content="+" Margin="2" Padding="6,2" VerticalAlignment="Center"
+                                    IsVisible="{Binding !IsOnMap}"
+                                    ToolTip.Tip="加入世界"
+                                    Command="{Binding $parent[UserControl].((vm:DocumentViewModel)DataContext).NpcEditor.AddCommand}"
+                                    CommandParameter="{Binding SpriteId}" />
+                            <Button Grid.Column="0" Content="-" Margin="2" Padding="6,2" VerticalAlignment="Center"
+                                    IsVisible="{Binding IsOnMap}"
+                                    ToolTip.Tip="从世界移除"
+                                    Command="{Binding $parent[UserControl].((vm:DocumentViewModel)DataContext).NpcEditor.RemoveCommand}"
+                                    CommandParameter="{Binding}" />
+                        </Panel>
+
+                        <Panel Grid.Column="2" VerticalAlignment="Center">
+                            <TextBlock Text="{Binding DefaultName}" VerticalAlignment="Center" Margin="4,0"
+                                       IsVisible="{Binding !IsOnMap}" />
+                            <TextBox Text="{Binding DisplayName, Mode=TwoWay}" Margin="2,0" MaxWidth="160"
+                                     VerticalAlignment="Center" IsVisible="{Binding IsOnMap}" />
+                        </Panel>
+
+                        <ComboBox Grid.Column="3" Margin="2" VerticalAlignment="Center" MinWidth="70"
+                                  ItemsSource="{Binding AvailableVariants}"
+                                  SelectedIndex="{Binding VariantIndex, Mode=TwoWay}"
+                                  IsVisible="{Binding HasVariants}" />
+
+                        <StackPanel Grid.Column="4" Orientation="Horizontal" VerticalAlignment="Center">
+                            <CheckBox Content="派对" FontSize="11" Margin="2,0" IsEnabled="{Binding IsOnMap}"
+                                      IsChecked="{Binding IsPartying, Mode=TwoWay}" />
+                        </StackPanel>
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </DockPanel>
+</UserControl>

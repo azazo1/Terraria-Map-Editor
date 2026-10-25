@@ -1,0 +1,50 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:TEdit5.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="440" d:DesignHeight="600"
+             x:Class="TEdit5.Views.NbtExplorerView"
+             x:CompileBindings="False">
+    <!-- 移植自 TEdit/View/Sidebar/NbtExplorerView.xaml, 坐标跳转与实体编辑暂缺 -->
+    <DockPanel Background="#2D2D2D">
+
+        <TextBlock DockPanel.Dock="Top" Text="NBT 浏览器" FontSize="16" FontWeight="SemiBold" Margin="8,6" />
+
+        <Grid DockPanel.Dock="Top" Margin="4" ColumnDefinitions="*,Auto,Auto">
+            <TextBox Grid.Column="0" Margin="2" PlaceholderText="按名字搜索"
+                     Text="{Binding Nbt.SearchText, Mode=TwoWay}" />
+            <Button Grid.Column="1" Content="刷新" Margin="2" Padding="8,4"
+                    Command="{Binding Nbt.RefreshCommand}" />
+            <Button Grid.Column="2" Content="跳转" Margin="2" Padding="8,4"
+                    Command="{Binding Nbt.ZoomToSelectedCommand}" />
+        </Grid>
+
+        <TextBlock DockPanel.Dock="Top" Margin="6,0,6,4" Foreground="#AAAAAA"
+                   Text="{Binding Nbt.Summary}" />
+
+        <Border DockPanel.Dock="Bottom" Margin="4" Padding="4" Background="#333333" CornerRadius="4"
+                IsVisible="{Binding Nbt.SelectedNode.CanEdit}">
+            <StackPanel Orientation="Horizontal" Spacing="6">
+                <TextBlock Text="修改值" VerticalAlignment="Center" />
+                <TextBox Width="220" Text="{Binding Nbt.SelectedNode.EditableValue, Mode=TwoWay}" />
+            </StackPanel>
+        </Border>
+
+        <TreeView ItemsSource="{Binding Nbt.RootNodes}"
+                  SelectedItem="{Binding Nbt.SelectedNode, Mode=TwoWay}"
+                  Background="Transparent">
+            <TreeView.ItemTemplate>
+                <TreeDataTemplate x:DataType="vm:NbtNode" ItemsSource="{Binding Children}">
+                    <StackPanel Orientation="Horizontal" Spacing="4">
+                        <TextBlock Text="{Binding TypeLabel}" Foreground="#8A8A8A" FontSize="11"
+                                   VerticalAlignment="Center" />
+                        <TextBlock Text="{Binding Name}" />
+                        <TextBlock Text="{Binding ValuePreview}" Foreground="#AAAAAA"
+                                   TextTrimming="CharacterEllipsis" />
+                    </StackPanel>
+                </TreeDataTemplate>
+            </TreeView.ItemTemplate>
+        </TreeView>
+    </DockPanel>
+</UserControl>

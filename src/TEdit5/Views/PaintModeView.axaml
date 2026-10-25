@@ -2,29 +2,33 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-			 xmlns:i="https://github.com/projektanker/icons.avalonia"
-             xmlns:c="clr-namespace:TEdit5.Controls"
-			 xmlns:vm="using:TEdit5.ViewModels"
-			 xmlns:editor="using:TEdit5.Editor"
-             mc:Ignorable="d" d:DesignWidth="32" d:DesignHeight="450"
+             mc:Ignorable="d" d:DesignWidth="620" d:DesignHeight="40"
              x:Class="TEdit5.Views.PaintModeView"
-			 x:DataType="vm:ToolSelectionViewModel">
-    <UserControl.Resources>
-        <DataTemplate x:Key="toolBarItemTemplate" x:DataType="editor:IMouseTool">
-            <ToggleButton
-				Margin="1"
-				Height="32"
-				Width="32"
-				Command="{Binding $parent.((vm:ToolSelectionViewModel)DataContext).SetToolCommand}"
-				CommandParameter="{Binding}"
-				IsChecked="{Binding IsActive}"
-                ToolTip.Tip="{Binding Tooltip}" >
-                <Panel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
-                    <i:Icon Value="{Binding IconName}" FontSize="20" Foreground="White" />
-                </Panel>
-            </ToggleButton>
-        </DataTemplate>
-    </UserControl.Resources>
-    <ItemsControl ItemsSource="{Binding Tools}" ItemTemplate="{StaticResource toolBarItemTemplate}" >
-    </ItemsControl>
+             x:CompileBindings="False">
+    <!-- 上下文工具栏: 与 Windows 版一样, 随当前工具显示涂抹模式与画笔设置 -->
+    <StackPanel Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
+
+        <TextBlock Text="涂抹" VerticalAlignment="Center" Foreground="#CCCCCC" />
+
+        <ToggleButton Content="方块" Padding="8,3"
+                      IsChecked="{Binding TilePicker.TileStyleActive, Mode=TwoWay}" />
+        <ToggleButton Content="墙体" Padding="8,3"
+                      IsChecked="{Binding TilePicker.WallStyleActive, Mode=TwoWay}" />
+        <ToggleButton Content="擦除" Padding="8,3"
+                      IsChecked="{Binding TilePicker.IsEraser, Mode=TwoWay}" />
+
+        <Rectangle Width="1" Height="24" Fill="#444444" Margin="6,0" />
+
+        <TextBlock Text="画笔形状" VerticalAlignment="Center" Foreground="#CCCCCC" />
+        <ComboBox Width="120"
+                  ItemsSource="{Binding BrushShapeOptions}"
+                  SelectedItem="{Binding SelectedBrushShape, Mode=TwoWay}" />
+
+        <TextBlock Text="大小" VerticalAlignment="Center" Foreground="#CCCCCC" />
+        <Slider Width="150" Minimum="1" Maximum="100"
+                Value="{Binding BrushSize, Mode=TwoWay}" />
+        <TextBlock Text="{Binding BrushSize, StringFormat='{}{0:F0}'}"
+                   VerticalAlignment="Center" MinWidth="30" />
+
+    </StackPanel>
 </UserControl>

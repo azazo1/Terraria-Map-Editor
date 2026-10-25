@@ -21,16 +21,18 @@ public static class WorldAnalysis
         if (world == null)
             return string.Empty;
 
-        using (var ms = new MemoryStream())
-        using (var writer = new StreamWriter(ms))
-        using (var reader = new StreamReader(ms))
+        using var ms = new MemoryStream();
+
+        // writer 用 leaveOpen 关闭自身, 否则它与 reader 的释放顺序会让流提前关闭.
+        using (var writer = new StreamWriter(ms, new System.Text.UTF8Encoding(false), 1024, leaveOpen: true))
         {
             WriteAnalyzeWorld(writer, world, true);
-            writer.Flush();
-            ms.Position = 0;
+        }
 
-            var text = reader.ReadToEnd();
-            return text;
+        ms.Position = 0;
+        using (var reader = new StreamReader(ms, System.Text.Encoding.UTF8, false, 1024, leaveOpen: true))
+        {
+            return reader.ReadToEnd();
         }
     }
 
@@ -164,7 +166,9 @@ public static class WorldAnalysis
         sb.WriteProperty("NPC Count", world.NPCs.Count);
         foreach (var npc in world.NPCs)
         {
-            sb.Write("ID: {0}, Name: {1}, Position: [{2:0.00}, {3:0.00}], {4}: [{5}, {6}]\r\n", npc.Name, npc.DisplayName, npc.Position.X, npc.Position.Y, npc.IsHomeless ? "Homeless" : "Home", npc.Home.X, npc.Home.Y);
+            int homeX = npc.Home?.X ?? 0;
+            int homeY = npc.Home?.Y ?? 0;
+            sb.Write("ID: {0}, Name: {1}, Position: [{2:0.00}, {3:0.00}], {4}: [{5}, {6}]\r\n", npc.Name, npc.DisplayName, npc.Position?.X ?? 0, npc.Position?.Y ?? 0, npc.IsHomeless ? "Homeless" : "Home", homeX, homeY);
         }
 
         sb.WriteLine("===SECTION: Tile Entities===");

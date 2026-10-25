@@ -1,0 +1,75 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:TEdit5.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="440" d:DesignHeight="600"
+             x:Class="TEdit5.Views.ScriptPanelView"
+             x:CompileBindings="False">
+    <!-- 移植自 TEdit/View/Sidebar/ScriptingSidebarView.xaml, 脚本执行暂缺 -->
+    <DockPanel Background="#2D2D2D">
+
+        <TextBlock DockPanel.Dock="Top" Text="脚本" FontSize="16" FontWeight="SemiBold" Margin="8,6" />
+
+        <Grid DockPanel.Dock="Top" Margin="4" ColumnDefinitions="*,Auto,Auto,Auto">
+            <ComboBox Grid.Column="0" Margin="2" HorizontalAlignment="Stretch"
+                      ItemsSource="{Binding Scripts.EngineNames}"
+                      SelectedIndex="{Binding Scripts.SelectedEngineIndex, Mode=TwoWay}" />
+            <Button Grid.Column="1" Content="新建" Margin="2" Padding="6,4"
+                    Command="{Binding Scripts.NewScriptCommand}" />
+            <Button Grid.Column="2" Content="保存" Margin="2" Padding="6,4"
+                    Command="{Binding Scripts.SaveScriptCommand}" />
+            <Button Grid.Column="3" Content="刷新" Margin="2" Padding="6,4"
+                    Command="{Binding Scripts.RefreshCommand}" />
+        </Grid>
+
+        <Grid DockPanel.Dock="Top" Margin="4" ColumnDefinitions="*,Auto,Auto,Auto">
+            <Button Grid.Column="3" Content="运行 Lua" Margin="2" Padding="6,4"
+                    Command="{Binding Scripts.RunLuaScriptCommand}" />
+            <Button Grid.Column="2" Content="运行" Margin="2" Padding="6,4"
+                    Command="{Binding Scripts.RunScriptCommand}" />
+            <Button Grid.Column="0" Content="API 参考" Margin="2" Padding="6,4" HorizontalAlignment="Stretch"
+                    Command="{Binding Scripts.ToggleApiReferenceCommand}" />
+            <Button Grid.Column="1" Content="导出文档" Margin="2" Padding="6,4"
+                    Command="{Binding Scripts.GenerateDocsCommand}" />
+        </Grid>
+
+        <Border DockPanel.Dock="Top" Margin="4" Background="#333333" CornerRadius="4" Padding="4"
+                IsVisible="{Binding Scripts.ShowApiReference}">
+            <ListBox ItemsSource="{Binding Scripts.ApiReference}" Height="120"
+                     Background="Transparent" BorderThickness="0">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}" Margin="2" TextWrapping="Wrap" />
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Border>
+
+        <TextBlock DockPanel.Dock="Bottom" Margin="6,0,6,4" Foreground="#AAAAAA" FontSize="11"
+                   Text="{Binding Scripts.Log}" />
+
+        <Grid ColumnDefinitions="160,5,*">
+            <ListBox Grid.Column="0" ItemsSource="{Binding Scripts.Scripts}"
+                     SelectedItem="{Binding Scripts.SelectedScript, Mode=TwoWay}"
+                     Background="Transparent" BorderThickness="0">
+                <ListBox.ItemTemplate>
+                    <DataTemplate x:DataType="vm:ScriptFileInfo">
+                        <TextBlock Text="{Binding Name}" Margin="2" TextTrimming="CharacterEllipsis" />
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+            <GridSplitter Grid.Column="1" Width="5" Background="#3F3F46" ResizeDirection="Columns" />
+
+            <TextBox Grid.Column="2" Margin="4"
+                     Text="{Binding Scripts.ScriptCode, Mode=TwoWay}"
+                     AcceptsReturn="True"
+                     AcceptsTab="True"
+                     TextWrapping="NoWrap"
+                     FontFamily="Menlo,Consolas,monospace"
+                     ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                     ScrollViewer.VerticalScrollBarVisibility="Auto" />
+        </Grid>
+    </DockPanel>
+</UserControl>

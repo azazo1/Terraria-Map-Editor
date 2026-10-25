@@ -5,66 +5,217 @@
         xmlns:vm="using:TEdit5.ViewModels"
         xmlns:v="using:TEdit5.Views"
         xmlns:c="clr-namespace:TEdit5.Controls"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        mc:Ignorable="d" d:DesignWidth="1600" d:DesignHeight="900"
         x:Class="TEdit5.Views.MainWindow"
-        Icon="/Assets/avalonia-logo.ico"
-        Title="TEdit51"
-        x:DataType="vm:MainWindowViewModel"
-        >
-    <Window.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.ThemeDictionaries>
-                <ResourceDictionary x:Key='Dark'>
-                    <SolidColorBrush x:Key='BackgroundBrush'>DodgerBlue</SolidColorBrush>
-                    <SolidColorBrush x:Key='ForegroundBrush'>White</SolidColorBrush>
-                </ResourceDictionary>
-            </ResourceDictionary.ThemeDictionaries>
-        </ResourceDictionary>
-    </Window.Resources>
+        x:CompileBindings="False"
+        Background="#2D2D2D"
+        Foreground="#CCCCCC"
+        Title="{Binding WindowTitle}">
 
     <Window.Styles>
-        <Style Selector="Button">
-            <Setter Property="Background" Value="{DynamicResource BackgroundBrush}" />
-            <Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}" />
+        <Style Selector="Button.tool">
+            <Setter Property="Width" Value="32" />
+            <Setter Property="Height" Value="32" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Margin" Value="1" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="CornerRadius" Value="6" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+        </Style>
+        <Style Selector="Button.tool:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="#3A3A3A" />
+        </Style>
+        <Style Selector="Rectangle.separator">
+            <Setter Property="Width" Value="1" />
+            <Setter Property="Height" Value="20" />
+            <Setter Property="Fill" Value="#3F3F46" />
+            <Setter Property="Margin" Value="8,0" />
+            <Setter Property="VerticalAlignment" Value="Center" />
         </Style>
     </Window.Styles>
 
-    <Grid RowDefinitions="*, 24" ColumnDefinitions="34, 300, 3, *">
+    <DockPanel>
 
-        <v:PaintModeView Grid.Column="0" DataContext="{Binding ToolSelection}"></v:PaintModeView>
-        <Grid Grid.Column="1" Grid.RowSpan="3" RowDefinitions="30,30,*" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-            <Button Grid.Row="0" Click="LoadWorldButton_Clicked" HorizontalAlignment="Stretch">Load World</Button>
-            <TextBox Grid.Row="1" Text="{Binding SelectedDocument.World.Title}"  HorizontalAlignment="Stretch" />
-            <v:WorldPropertiesView Grid.Row="2" DataContext="{Binding SelectedDocument}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
-        </Grid>
+        <!-- 状态栏 -->
+        <Border DockPanel.Dock="Bottom" Height="26" Padding="8,2"
+                Background="#252526" BorderThickness="0,1,0,0" BorderBrush="#3F3F46">
+            <DockPanel>
+                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                    <TextBlock Text="{Binding ProgressText}" VerticalAlignment="Center" Margin="4,0"
+                               Foreground="#AAAAAA" FontSize="11" />
+                    <ProgressBar Width="90" Height="12" Minimum="0" Maximum="100"
+                                 Value="{Binding ProgressPercentage}" VerticalAlignment="Center" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Spacing="6">
+                    <TextBlock Text="位置" VerticalAlignment="Center" Foreground="#8A8A8A" FontSize="11" />
+                    <TextBlock Text="{Binding SelectedDocument.CursorText}" VerticalAlignment="Center" MinWidth="70" FontSize="11" />
+                    <TextBlock Text="深度" VerticalAlignment="Center" Foreground="#8A8A8A" FontSize="11" />
+                    <TextBlock Text="{Binding SelectedDocument.DepthText}" VerticalAlignment="Center" MinWidth="110" FontSize="11" />
+                    <TextBlock Text="方块" VerticalAlignment="Center" Foreground="#8A8A8A" FontSize="11" />
+                    <TextBlock Text="{Binding SelectedDocument.TileNameText}" VerticalAlignment="Center" MinWidth="110" FontSize="11" />
+                    <TextBlock Text="墙体" VerticalAlignment="Center" Foreground="#8A8A8A" FontSize="11" />
+                    <TextBlock Text="{Binding SelectedDocument.WallNameText}" VerticalAlignment="Center" MinWidth="110" FontSize="11" />
+                    <TextBlock Text="选区" VerticalAlignment="Center" Foreground="#8A8A8A" FontSize="11" />
+                    <TextBlock Text="{Binding SelectedDocument.SelectionSizeText}" VerticalAlignment="Center" MinWidth="110" FontSize="11" />
 
-        <GridSplitter Grid.Column="2" Width="3" ResizeDirection="Columns" Background="Gray" />
-
-        <TabControl
-            Grid.Column="3"
-            Grid.Row="0"
-            ItemsSource="{Binding DocumentService.Documents}"
-            SelectedItem="{Binding SelectedDocument}"
-            HorizontalAlignment="Stretch"
-            VerticalAlignment="Stretch" MinHeight="300" MinWidth="300">
-            <TabControl.ContentTemplate>
-                <DataTemplate x:DataType="vm:DocumentViewModel">
-                    <v:DocumentView DataContext="{Binding}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
-                </DataTemplate>
-            </TabControl.ContentTemplate>
-            <TabControl.ItemTemplate>
-                <DataTemplate>
-                    <TextBlock Text="{Binding World.Title}" />
-                </DataTemplate>
-            </TabControl.ItemTemplate>
-        </TabControl>
-
-        <Border Grid.ColumnSpan="3" Grid.Row="1" MinHeight="24" Padding="8,4" BorderThickness="0,1,0,0" BorderBrush="#666666">
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" >
-                <Label Margin="2,0" Content="{Binding ProgressText, Mode=OneWay}" />
-                <ProgressBar Margin="2,0" Value="{Binding ProgressPercentage, Mode=OneWay}" />
-            </StackPanel>
+                </StackPanel>
+            </DockPanel>
         </Border>
-    </Grid>
 
+        <!-- 左侧图标栏: 文件 / 历史 / 工具 (保持竖排, 按钮圆角悬停是 macOS 习惯) -->
+        <Border DockPanel.Dock="Left" Width="38" Background="#2D2D2D">
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                <StackPanel Margin="1">
+                    <Button Classes="tool" ToolTip.Tip="打开世界 (Cmd+O)" Command="{Binding OpenWorldCommand}">
+                        <PathIcon Data="{StaticResource IconFolderOpen24}" Width="20" Height="20" Foreground="#CCCCCC" />
+                    </Button>
+                    <Button Classes="tool" ToolTip.Tip="保存 (Cmd+S)" Command="{Binding SaveCommand}">
+                        <PathIcon Data="{StaticResource IconSave24}" Width="20" Height="20" Foreground="#CCCCCC" />
+                    </Button>
+                    <Rectangle Height="1" Fill="#3F3F46" Margin="4,4" />
+                    <Button Classes="tool" ToolTip.Tip="放大" Command="{Binding ZoomInCommand}">
+                        <PathIcon Data="{StaticResource IconZoomIn24}" Width="20" Height="20" Foreground="#CCCCCC" />
+                    </Button>
+                    <Button Classes="tool" ToolTip.Tip="缩小" Command="{Binding ZoomOutCommand}">
+                        <PathIcon Data="{StaticResource IconZoomOut24}" Width="20" Height="20" Foreground="#CCCCCC" />
+                    </Button>
+                    <Button Classes="tool" ToolTip.Tip="撤销 (Cmd+Z)" Command="{Binding UndoCommand}">
+                        <PathIcon Data="{StaticResource IconArrowUndo24}" Width="20" Height="20" Foreground="#CCCCCC" />
+                    </Button>
+                    <Button Classes="tool" ToolTip.Tip="重做 (Cmd+Shift+Z)" Command="{Binding RedoCommand}">
+                        <PathIcon Data="{StaticResource IconArrowRedo24}" Width="20" Height="20" Foreground="#CCCCCC" />
+                    </Button>
+                    <Rectangle Height="1" Fill="#3F3F46" Margin="4,4" />
+                    <v:ToolSelectorView DataContext="{Binding ToolSelection}" />
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+
+        <DockPanel>
+            <!-- 上下文工具栏 + 小地图 -->
+            <Border DockPanel.Dock="Top" Height="140" Background="#2D2D2D"
+                    BorderThickness="0,0,0,1" BorderBrush="#3F3F46">
+                <Grid ColumnDefinitions="*,Auto">
+                    <ScrollViewer Grid.Column="0" HorizontalScrollBarVisibility="Auto"
+                                  VerticalScrollBarVisibility="Disabled">
+                        <v:PaintModeView DataContext="{Binding SelectedDocument}" />
+                    </ScrollViewer>
+                    <Border Grid.Column="1" Width="300" Height="130" Margin="6"
+                            BorderThickness="1" BorderBrush="#3F3F46" Background="Black">
+                        <c:SkiaMinimapRenderBox World="{Binding SelectedDocument.World}" />
+                    </Border>
+                </Grid>
+            </Border>
+
+            <!-- 世界视图 + 右侧活动栏 -->
+            <Grid ColumnDefinitions="*,5,488">
+                <v:DocumentView Grid.Column="0" DataContext="{Binding SelectedDocument}" />
+                <GridSplitter Grid.Column="1" Width="5" Background="#3F3F46" ResizeDirection="Columns" />
+
+                <TabControl Grid.Column="2" Theme="{StaticResource ActivityBarTabControl}"
+                                SelectedIndex="{Binding SelectedDocument.SelectedPanelIndex, Mode=TwoWay}">
+                    <TabItem Theme="{StaticResource ActivityBarItem}" ToolTip.Tip="世界属性">
+                        <TabItem.Header>
+                            <PathIcon Data="{StaticResource IconGlobe20}" Width="24" Height="24" Foreground="#CCCCCC" />
+                        </TabItem.Header>
+                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <v:WorldPropertiesView DataContext="{Binding SelectedDocument}" />
+                        </ScrollViewer>
+                    </TabItem>
+                    <TabItem Theme="{StaticResource ActivityBarItem}" ToolTip.Tip="调色板">
+                        <TabItem.Header>
+                            <PathIcon Data="{StaticResource IconPaintBrush20}" Width="24" Height="24" Foreground="#CCCCCC" />
+                        </TabItem.Header>
+                        <v:PaletteView DataContext="{Binding SelectedDocument}" />
+                    </TabItem>
+                    <TabItem Theme="{StaticResource ActivityBarItem}" ToolTip.Tip="特殊方块">
+                        <TabItem.Header>
+                            <PathIcon Data="{StaticResource IconChestIconGeometry}" Width="24" Height="24" Foreground="#CCCCCC" />
+                        </TabItem.Header>
+                        <v:SpecialTilePanelView DataContext="{Binding SelectedDocument}" />
+                    </TabItem>
+                    <TabItem Theme="{StaticResource ActivityBarItem}" ToolTip.Tip="精灵">
+                        <TabItem.Header>
+                            <PathIcon Data="{StaticResource IconCouch20}" Width="24" Height="24" Foreground="#CCCCCC" />
+                        </TabItem.Header>
+                        <v:SpritePanelView DataContext="{Binding SelectedDocument}" />
+                    </TabItem>
+                    <TabItem Theme="{StaticResource ActivityBarItem}" ToolTip.Tip="剪贴板">
+                        <TabItem.Header>
+                            <PathIcon Data="{StaticResource IconClipboard20}" Width="24" Height="24" Foreground="#CCCCCC" />
+                        </TabItem.Header>
+                        <v:ClipboardPanelView DataContext="{Binding SelectedDocument}" />
+                    </TabItem>
+                    <TabItem Theme="{StaticResource ActivityBarItem}" ToolTip.Tip="NPC 名称">
+                        <TabItem.Header>
+                            <PathIcon Data="{StaticResource IconPeople20}" Width="24" Height="24" Foreground="#CCCCCC" />
+                        </TabItem.Header>
+                        <v:NpcEditorView DataContext="{Binding SelectedDocument}" />
+                    </TabItem>
+                    <TabItem Theme="{StaticResource ActivityBarItem}" ToolTip.Tip="世界分析">
+                        <TabItem.Header>
+                            <PathIcon Data="{StaticResource IconChartMultiple20}" Width="24" Height="24" Foreground="#CCCCCC" />
+                        </TabItem.Header>
+                        <v:WorldAnalysisView DataContext="{Binding SelectedDocument}" />
+                    </TabItem>
+                    <TabItem Theme="{StaticResource ActivityBarItem}" ToolTip.Tip="图鉴">
+                        <TabItem.Header>
+                            <PathIcon Data="{StaticResource IconTrophy20}" Width="24" Height="24" Foreground="#CCCCCC" />
+                        </TabItem.Header>
+                        <v:BestiaryPanelView DataContext="{Binding SelectedDocument}" />
+                    </TabItem>
+                    <TabItem Theme="{StaticResource ActivityBarItem}" ToolTip.Tip="旗帜">
+                        <TabItem.Header>
+                            <PathIcon Data="{StaticResource IconBannerIconGeometry}" Width="24" Height="24" Foreground="#CCCCCC" />
+                        </TabItem.Header>
+                        <v:BannerPanelView DataContext="{Binding SelectedDocument}" />
+                    </TabItem>
+                    <TabItem Theme="{StaticResource ActivityBarItem}" ToolTip.Tip="图格实体">
+                        <TabItem.Header>
+                            <PathIcon Data="{StaticResource IconTileEntityIconGeometry}" Width="24" Height="24" Foreground="#CCCCCC" />
+                        </TabItem.Header>
+                        <v:TileEntityExaminerView DataContext="{Binding SelectedDocument}" />
+                    </TabItem>
+                    <TabItem Theme="{StaticResource ActivityBarItem}" ToolTip.Tip="创意能力">
+                        <TabItem.Header>
+                            <PathIcon Data="{StaticResource IconSparkle20}" Width="24" Height="24" Foreground="#CCCCCC" />
+                        </TabItem.Header>
+                        <v:CreativePowersView DataContext="{Binding SelectedDocument}" />
+                    </TabItem>
+                    <TabItem Theme="{StaticResource ActivityBarItem}" ToolTip.Tip="过滤">
+                        <TabItem.Header>
+                            <PathIcon Data="{StaticResource IconFilter20}" Width="24" Height="24" Foreground="#CCCCCC" />
+                        </TabItem.Header>
+                        <v:FilterPanelView DataContext="{Binding SelectedDocument}" />
+                    </TabItem>
+                    <TabItem Theme="{StaticResource ActivityBarItem}" ToolTip.Tip="查找">
+                        <TabItem.Header>
+                            <PathIcon Data="{StaticResource IconSearch20}" Width="24" Height="24" Foreground="#CCCCCC" />
+                        </TabItem.Header>
+                        <v:FindPanelView DataContext="{Binding SelectedDocument}" />
+                    </TabItem>
+                    <TabItem Theme="{StaticResource ActivityBarItem}" ToolTip.Tip="脚本">
+                        <TabItem.Header>
+                            <PathIcon Data="{StaticResource IconCode20}" Width="24" Height="24" Foreground="#CCCCCC" />
+                        </TabItem.Header>
+                        <v:ScriptPanelView DataContext="{Binding SelectedDocument}" />
+                    </TabItem>
+                    <TabItem Theme="{StaticResource ActivityBarItem}" ToolTip.Tip="玩家">
+                        <TabItem.Header>
+                            <PathIcon Data="{StaticResource IconPlayerIconGeometry}" Width="24" Height="24" Foreground="#CCCCCC" />
+                        </TabItem.Header>
+                        <v:PlayerEditorView DataContext="{Binding SelectedDocument}" />
+                    </TabItem>
+                    <TabItem Theme="{StaticResource ActivityBarItem}" ToolTip.Tip="NBT 浏览器">
+                        <TabItem.Header>
+                            <PathIcon Data="{StaticResource IconDatabase20}" Width="24" Height="24" Foreground="#CCCCCC" />
+                        </TabItem.Header>
+                        <v:NbtExplorerView DataContext="{Binding SelectedDocument}" />
+                    </TabItem>
+                </TabControl>
+            </Grid>
+        </DockPanel>
+    </DockPanel>
 </Window>

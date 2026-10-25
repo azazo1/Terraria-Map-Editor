@@ -1,0 +1,80 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:TEdit5.ViewModels"
+             xmlns:cb="using:TEdit.Editor.Clipboard"
+             mc:Ignorable="d" d:DesignWidth="440" d:DesignHeight="600"
+             x:Class="TEdit5.Views.ClipboardPanelView"
+             x:CompileBindings="False">
+    <!-- 移植自 TEdit/View/Sidebar/ClipboardView.xaml -->
+    <DockPanel Background="#2D2D2D">
+
+        <TextBlock DockPanel.Dock="Top" Text="剪贴板" FontSize="16" FontWeight="SemiBold" Margin="8,6" />
+
+        <StackPanel DockPanel.Dock="Top" Orientation="Vertical" HorizontalAlignment="Stretch">
+            <UniformGrid Columns="2" Margin="4,0">
+                <Button Content="清空" Margin="2" Padding="6,4" HorizontalAlignment="Stretch"
+                        Command="{Binding ClearClipboardCommand}" />
+                <Button Content="复制选区" Margin="2" Padding="6,4" HorizontalAlignment="Stretch"
+                        ToolTip.Tip="把当前选区加入剪贴板"
+                        Command="{Binding CopySelectionCommand}" />
+            </UniformGrid>
+
+            <ToggleSwitch Margin="4,2" HorizontalAlignment="Center" Content="立即粘贴"
+                          IsChecked="{Binding Clipboard.InstantPaste, Mode=TwoWay}" />
+
+            <Grid Margin="4" ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto,Auto">
+                <CheckBox Grid.Row="0" Grid.Column="0" Content="空方块" Margin="2"
+                          IsChecked="{Binding Clipboard.Options.PasteEmpty, Mode=TwoWay}" />
+                <CheckBox Grid.Row="0" Grid.Column="1" Content="方块" Margin="2"
+                          IsChecked="{Binding Clipboard.Options.PasteTiles, Mode=TwoWay}" />
+                <CheckBox Grid.Row="1" Grid.Column="0" Content="墙体" Margin="2"
+                          IsChecked="{Binding Clipboard.Options.PasteWalls, Mode=TwoWay}" />
+                <CheckBox Grid.Row="1" Grid.Column="1" Content="液体" Margin="2"
+                          IsChecked="{Binding Clipboard.Options.PasteLiquids, Mode=TwoWay}" />
+                <CheckBox Grid.Row="2" Grid.Column="0" Content="电线" Margin="2"
+                          IsChecked="{Binding Clipboard.Options.PasteWires, Mode=TwoWay}" />
+                <CheckBox Grid.Row="2" Grid.Column="1" Content="精灵" Margin="2"
+                          IsChecked="{Binding Clipboard.Options.PasteSprites, Mode=TwoWay}" />
+                <CheckBox Grid.Row="3" Grid.Column="0" Content="覆盖原有方块" Margin="2"
+                          IsChecked="{Binding Clipboard.Options.PasteOverTiles, Mode=TwoWay}" />
+            </Grid>
+        </StackPanel>
+
+        <ListBox ItemsSource="{Binding Clipboard.Buffers}"
+                 SelectedItem="{Binding Clipboard.ActiveBuffer, Mode=TwoWay}"
+                 Background="Transparent" BorderThickness="0">
+            <ListBox.ItemTemplate>
+                <DataTemplate x:DataType="cb:ClipboardBuffer">
+                    <StackPanel Margin="2">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <TextBlock Grid.Column="0" Text="{Binding Name}" FontWeight="SemiBold" />
+                            <TextBlock Grid.Column="1" Foreground="#AAAAAA" FontSize="11"
+                                       Text="{Binding Size.X, StringFormat='{}{0}'}" />
+                        </Grid>
+                        <TextBlock Foreground="#AAAAAA" FontSize="11"
+                                   Text="{Binding Size.Y, StringFormat='高度 {0}'}" />
+                        <UniformGrid Columns="5" Margin="0,4,0,0">
+                            <Button Content="粘贴" Margin="1" Padding="3" FontSize="11"
+                                    Command="{Binding $parent[ListBox].((vm:DocumentViewModel)DataContext).PasteBufferCommand}"
+                                    CommandParameter="{Binding}" />
+                            <Button Content="删除" Margin="1" Padding="3" FontSize="11"
+                                    Command="{Binding $parent[ListBox].((vm:DocumentViewModel)DataContext).RemoveBufferCommand}"
+                                    CommandParameter="{Binding}" />
+                            <Button Content="旋转" Margin="1" Padding="3" FontSize="11"
+                                    Command="{Binding $parent[ListBox].((vm:DocumentViewModel)DataContext).RotateBufferCommand}"
+                                    CommandParameter="{Binding}" />
+                            <Button Content="水平" Margin="1" Padding="3" FontSize="11"
+                                    Command="{Binding $parent[ListBox].((vm:DocumentViewModel)DataContext).FlipXBufferCommand}"
+                                    CommandParameter="{Binding}" />
+                            <Button Content="垂直" Margin="1" Padding="3" FontSize="11"
+                                    Command="{Binding $parent[ListBox].((vm:DocumentViewModel)DataContext).FlipYBufferCommand}"
+                                    CommandParameter="{Binding}" />
+                        </UniformGrid>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </DockPanel>
+</UserControl>

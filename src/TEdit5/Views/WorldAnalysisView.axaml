@@ -1,0 +1,31 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="440" d:DesignHeight="500"
+             x:Class="TEdit5.Views.WorldAnalysisView"
+             x:CompileBindings="False">
+    <!-- 移植自 TEdit/View/Sidebar/WorldAnalysis.xaml -->
+    <DockPanel Background="#2D2D2D">
+
+        <TextBlock DockPanel.Dock="Top" Text="世界分析" FontSize="16" FontWeight="SemiBold" Margin="8,6" />
+
+        <UniformGrid DockPanel.Dock="Top" Columns="2" Margin="4,0">
+            <Button Content="分析世界" Margin="2" Padding="6,4" HorizontalAlignment="Stretch"
+                    Command="{Binding AnalyzeWorldCommand}" />
+            <Button Content="保存报告" Margin="2" Padding="6,4" HorizontalAlignment="Stretch"
+                    Command="{Binding AnalyzeWorldSaveCommand}" />
+        </UniformGrid>
+
+        <TextBox Text="{Binding AnalysisText, Mode=OneWay}"
+                 IsReadOnly="True"
+                 AcceptsReturn="True"
+                 TextWrapping="Wrap"
+                 HorizontalAlignment="Stretch"
+                 VerticalAlignment="Stretch"
+                 MinHeight="150"
+                 Margin="2"
+                 ScrollViewer.HorizontalScrollBarVisibility="Visible"
+                 ScrollViewer.VerticalScrollBarVisibility="Visible" />
+    </DockPanel>
+</UserControl>

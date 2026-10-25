@@ -1,0 +1,140 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:TEdit5.ViewModels"
+             xmlns:c="using:TEdit5.Controls"
+             mc:Ignorable="d" d:DesignWidth="420" d:DesignHeight="560"
+             x:Class="TEdit5.Views.TilePickerPanelView"
+             x:CompileBindings="False">
+    <!-- 移植自 TEdit/View/Sidebar/Controls/TilePickerPanelControl.xaml -->
+    <UserControl.Resources>
+        <DataTemplate x:Key="ColorPickerTemplate" x:DataType="vm:PaletteItem">
+            <StackPanel Orientation="Horizontal" Spacing="4">
+                <Border Width="14" Height="14" VerticalAlignment="Center"
+                        Background="{Binding Brush}" BorderThickness="1" BorderBrush="#666666" />
+                <TextBlock Text="{Binding Name}" VerticalAlignment="Center" />
+            </StackPanel>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <StackPanel Margin="4">
+
+        <!-- 涂抹模式 + 橡皮 -->
+        <Grid Margin="0,0,0,4" ColumnDefinitions="Auto,*,Auto">
+            <TextBlock Grid.Column="0" Text="涂抹模式" VerticalAlignment="Center" Margin="0,0,8,0" />
+            <ComboBox Grid.Column="1" HorizontalAlignment="Stretch"
+                      ItemsSource="{Binding PaintModes}"
+                      SelectedItem="{Binding TilePicker.PaintMode, Mode=TwoWay}" />
+            <ToggleButton Grid.Column="2" Margin="4,0,0,0" Padding="4"
+                          ToolTip.Tip="橡皮"
+                          IsChecked="{Binding TilePicker.IsEraser, Mode=TwoWay}">
+                <PathIcon Data="{StaticResource IconEraser20}" Width="16" Height="16" />
+            </ToggleButton>
+        </Grid>
+
+        <!-- 方块 / 墙体 -->
+        <Grid Margin="0,4,0,0" ColumnDefinitions="*,4,*">
+            <StackPanel Grid.Column="0">
+                <DockPanel Margin="0,0,0,2">
+                    <ToggleSwitch DockPanel.Dock="Left" IsChecked="{Binding TilePicker.TileStyleActive}"
+                                  OnContent="" OffContent="" Margin="0,0,4,0" />
+                    <TextBlock Text="方块" FontWeight="SemiBold" VerticalAlignment="Center" />
+                </DockPanel>
+                <c:PalettePickerView Height="110" Margin="0,2"
+                                     Items="{Binding TilePaletteItems}"
+                                     SelectedId="{Binding TilePicker.Tile, Mode=TwoWay}" />
+            </StackPanel>
+
+            <StackPanel Grid.Column="2">
+                <DockPanel Margin="0,0,0,2">
+                    <ToggleSwitch DockPanel.Dock="Left" IsChecked="{Binding TilePicker.WallStyleActive}"
+                                  OnContent="" OffContent="" Margin="0,0,4,0" />
+                    <TextBlock Text="墙体" FontWeight="SemiBold" VerticalAlignment="Center" />
+                </DockPanel>
+                <c:PalettePickerView Height="110" Margin="0,2"
+                                     Items="{Binding WallPaletteItems}"
+                                     SelectedId="{Binding TilePicker.Wall, Mode=TwoWay}" />
+            </StackPanel>
+        </Grid>
+
+        <!-- 砖样式 -->
+        <TextBlock Text="砖样式" FontWeight="SemiBold" Margin="0,8,0,2" />
+        <ComboBox HorizontalAlignment="Stretch"
+                  ItemsSource="{Binding BrickStyles}"
+                  SelectedItem="{Binding TilePicker.BrickStyle, Mode=TwoWay}" />
+
+        <!-- 漆 -->
+        <TextBlock Text="漆" FontWeight="SemiBold" Margin="0,8,0,2" />
+        <Grid ColumnDefinitions="Auto,*,Auto,*">
+            <ToggleSwitch Grid.Column="0" IsChecked="{Binding TilePicker.TilePaintActive}"
+                          OnContent="" OffContent="" Margin="0,0,4,0" ToolTip.Tip="方块漆" />
+            <c:PalettePickerView Grid.Column="1" Height="90"
+                                 IsEnabled="{Binding TilePicker.TilePaintActive}"
+                                 Items="{Binding PaintPaletteItems}"
+                                 SelectedId="{Binding TilePicker.TileColor, Mode=TwoWay}" />
+            <ToggleSwitch Grid.Column="2" IsChecked="{Binding TilePicker.WallPaintActive}"
+                          OnContent="" OffContent="" Margin="8,0,4,0" ToolTip.Tip="墙体漆" />
+            <c:PalettePickerView Grid.Column="3" Height="90"
+                                 IsEnabled="{Binding TilePicker.WallPaintActive}"
+                                 Items="{Binding PaintPaletteItems}"
+                                 SelectedId="{Binding TilePicker.WallColor, Mode=TwoWay}" />
+        </Grid>
+
+        <!-- 涂层 -->
+        <TextBlock Text="涂层" FontWeight="SemiBold" Margin="0,8,0,2" />
+        <Grid ColumnDefinitions="*,4,*">
+            <StackPanel Grid.Column="0">
+                <ToggleSwitch IsChecked="{Binding TilePicker.EnableTileCoating}" Content="方块"
+                              OnContent="" OffContent="" />
+                <ToggleSwitch IsChecked="{Binding TilePicker.TileCoatingIlluminant}" Content="发光涂层"
+                              IsEnabled="{Binding TilePicker.EnableTileCoating}" OnContent="" OffContent="" Margin="16,0,0,0" />
+                <ToggleSwitch IsChecked="{Binding TilePicker.TileCoatingEcho}" Content="回声涂层"
+                              IsEnabled="{Binding TilePicker.EnableTileCoating}" OnContent="" OffContent="" Margin="16,0,0,0" />
+            </StackPanel>
+            <StackPanel Grid.Column="2">
+                <ToggleSwitch IsChecked="{Binding TilePicker.EnableWallCoating}" Content="墙体"
+                              OnContent="" OffContent="" />
+                <ToggleSwitch IsChecked="{Binding TilePicker.WallCoatingIlluminant}" Content="发光涂层"
+                              IsEnabled="{Binding TilePicker.EnableWallCoating}" OnContent="" OffContent="" Margin="16,0,0,0" />
+                <ToggleSwitch IsChecked="{Binding TilePicker.WallCoatingEcho}" Content="回声涂层"
+                              IsEnabled="{Binding TilePicker.EnableWallCoating}" OnContent="" OffContent="" Margin="16,0,0,0" />
+            </StackPanel>
+        </Grid>
+
+        <!-- 附加 -->
+        <TextBlock Text="附加" FontWeight="SemiBold" Margin="0,8,0,2" />
+        <StackPanel>
+            <ToggleSwitch IsChecked="{Binding TilePicker.ExtrasActive}" Content="附加选项"
+                          OnContent="" OffContent="" />
+            <ToggleSwitch IsChecked="{Binding TilePicker.Actuator}" Content="促动器"
+                          IsEnabled="{Binding TilePicker.ExtrasActive}" OnContent="" OffContent="" Margin="16,0,0,0" />
+            <ToggleSwitch IsChecked="{Binding TilePicker.ActuatorInActive}" Content="促动器失效"
+                          IsEnabled="{Binding TilePicker.ExtrasActive}" OnContent="" OffContent="" Margin="16,0,0,0" />
+        </StackPanel>
+
+        <!-- 电线 -->
+        <TextBlock Text="电线" FontWeight="SemiBold" Margin="0,8,0,2" />
+        <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto">
+            <ToggleSwitch Grid.Row="0" Grid.Column="0" IsChecked="{Binding TilePicker.RedWireActive}" Content="红电线"
+                          OnContent="" OffContent="" />
+            <ToggleSwitch Grid.Row="0" Grid.Column="1" IsChecked="{Binding TilePicker.BlueWireActive}" Content="蓝电线"
+                          OnContent="" OffContent="" Margin="4,0,0,0" />
+            <ToggleSwitch Grid.Row="1" Grid.Column="0" IsChecked="{Binding TilePicker.GreenWireActive}" Content="绿电线"
+                          OnContent="" OffContent="" />
+            <ToggleSwitch Grid.Row="1" Grid.Column="1" IsChecked="{Binding TilePicker.YellowWireActive}" Content="黄电线"
+                          OnContent="" OffContent="" Margin="4,0,0,0" />
+        </Grid>
+
+        <!-- 液体 -->
+        <TextBlock Text="液体" FontWeight="SemiBold" Margin="0,8,0,2" />
+        <Grid ColumnDefinitions="*,4,*">
+            <ComboBox Grid.Column="0" HorizontalAlignment="Stretch"
+                      ItemsSource="{Binding LiquidTypes}"
+                      SelectedItem="{Binding TilePicker.LiquidType, Mode=TwoWay}" />
+            <ComboBox Grid.Column="2" HorizontalAlignment="Stretch"
+                      ItemsSource="{Binding LiquidAmountModes}"
+                      SelectedItem="{Binding TilePicker.LiquidAmountMode, Mode=TwoWay}" />
+        </Grid>
+    </StackPanel>
+</UserControl>

@@ -1,0 +1,187 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:TEdit5.ViewModels"
+             xmlns:terraria="using:TEdit.Terraria"
+             xmlns:c="using:TEdit5.Controls"
+             mc:Ignorable="d" d:DesignWidth="440" d:DesignHeight="500"
+             x:Class="TEdit5.Views.SpecialTilePanelView"
+             xmlns:ctl="using:TEdit5.Controls"
+             x:CompileBindings="False">
+    <UserControl.Resources>
+        <ctl:ItemIconConverter x:Key="ItemIcon" />
+    </UserControl.Resources>
+    <!-- 移植自 TEdit/View/Sidebar/SpecialTileView.xaml, 目前含指引页与告示牌编辑器 -->
+    <DockPanel Background="#2D2D2D">
+
+        <TextBlock DockPanel.Dock="Top" Text="特殊方块" FontSize="16" FontWeight="SemiBold" Margin="8,6" />
+
+        <Grid>
+            <!-- 指引 -->
+            <TextBlock Text="把光标移到箱子, 告示牌或图格实体上, 这里会显示对应编辑器"
+                       TextWrapping="Wrap" Margin="6" FontWeight="Bold"
+                       IsVisible="{Binding SpecialTiles.ShowInstructions}" />
+
+            <!-- 告示牌 -->
+            <Grid IsVisible="{Binding SpecialTiles.ShowSign}" RowDefinitions="Auto,*,Auto" Margin="4">
+                <StackPanel Grid.Row="0" Orientation="Horizontal">
+                    <TextBlock Text="告示牌文字" FontWeight="Bold" Margin="2" />
+                    <TextBlock Text="{Binding SpecialTiles.SignLocation}" FontWeight="Bold" Margin="2" />
+                </StackPanel>
+
+                <TextBox Grid.Row="1" Margin="2"
+                         Text="{Binding SpecialTiles.SignText, Mode=TwoWay}"
+                         AcceptsReturn="True" TextWrapping="Wrap"
+                         MinHeight="150"
+                         VerticalAlignment="Stretch"
+                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                         ScrollViewer.VerticalScrollBarVisibility="Visible" />
+
+                <UniformGrid Grid.Row="2" Columns="2">
+                    <Button Content="取消" Margin="5" HorizontalAlignment="Stretch"
+                            Command="{Binding SpecialTiles.SaveSignCommand}" CommandParameter="False" />
+                    <Button Content="保存" Margin="5" HorizontalAlignment="Stretch"
+                            Command="{Binding SpecialTiles.SaveSignCommand}" CommandParameter="True" />
+                </UniformGrid>
+            </Grid>
+
+            <!-- 箱子 -->
+            <Grid IsVisible="{Binding SpecialTiles.ShowChest}" RowDefinitions="Auto,Auto,Auto,*,Auto" Margin="4">
+                <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto">
+                    <TextBlock Grid.Column="0" Text="箱子名称" FontWeight="Bold" VerticalAlignment="Center" Margin="5,2" />
+                    <TextBox Grid.Column="1" Margin="2" Text="{Binding SpecialTiles.SelectedChest.Name, Mode=TwoWay}" />
+                    <Button Grid.Column="2" Content="清空" Margin="2,0,0,0" Padding="6,2"
+                            ToolTip.Tip="清空箱子里的物品"
+                            Command="{Binding SpecialTiles.ClearChestCommand}" />
+                </Grid>
+
+                <TextBlock Grid.Row="1" Text="箱子内容" FontWeight="Bold" Margin="2" />
+
+                <Grid Grid.Row="2" ColumnDefinitions="Auto,Auto,Auto,Auto,*">
+                    <TextBlock Grid.Column="0" Text="物品编号" VerticalAlignment="Center" Margin="2" />
+                    <NumericUpDown Grid.Column="1" Width="110" Minimum="1" Maximum="6000" Increment="1"
+                                   FormatString="0" Margin="2"
+                                   Value="{Binding SpecialTiles.NewItemId, Mode=TwoWay}" />
+                    <Button Grid.Column="2" Content="添加物品" Margin="2" Padding="6,2"
+                            Command="{Binding SpecialTiles.AddItemCommand}" />
+                    <Button Grid.Column="3" Content="移除选中" Margin="2" Padding="6,2"
+                            Command="{Binding SpecialTiles.RemoveItemCommand}" />
+                </Grid>
+
+                <c:ItemPickerView Grid.Row="2" Height="120" Margin="2"
+                                  IsVisible="{Binding SpecialTiles.SelectedItem, Converter={x:Static ObjectConverters.IsNotNull}}"
+                                  SelectedId="{Binding SpecialTiles.SelectedItem.NetId, Mode=TwoWay}" />
+
+                <ListBox Grid.Row="3" Margin="2" MinHeight="160"
+                         ItemsSource="{Binding SpecialTiles.SelectedChest.Items}"
+                         SelectedItem="{Binding SpecialTiles.SelectedItem, Mode=TwoWay}"
+                         Background="Transparent" BorderThickness="0">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate x:DataType="terraria:Item">
+                            <Grid ColumnDefinitions="20,60,60,*,Auto">
+                                <Image Grid.Column="0" Width="16" Height="16" Margin="2" Stretch="Uniform"
+                                       Source="{Binding NetId, Converter={StaticResource ItemIcon}}" />
+                                <TextBlock Grid.Column="1" Text="{Binding StackSize}" Margin="2" TextAlignment="Right" Foreground="#CCCCCC" />
+                                <TextBlock Grid.Column="2" Text="{Binding PrefixName}" Margin="2" Foreground="#CCCCCC" />
+                                <TextBlock Grid.Column="3" Text="{Binding Name}" Margin="2" TextTrimming="CharacterEllipsis" />
+                                <Button Grid.Column="3" Content="满堆叠" Margin="2,0" Padding="4,1" FontSize="11"
+                                        Command="{Binding $parent[UserControl].((vm:DocumentViewModel)DataContext).SpecialTiles.MaxStackItemCommand}"
+                                        CommandParameter="{Binding}" />
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+                <UniformGrid Grid.Row="4" Columns="2">
+                    <Button Content="取消" Margin="5" HorizontalAlignment="Stretch"
+                            Command="{Binding SpecialTiles.SaveChestCommand}" CommandParameter="False" />
+                    <Button Content="保存" Margin="5" HorizontalAlignment="Stretch"
+                            Command="{Binding SpecialTiles.SaveChestCommand}" CommandParameter="True" />
+                </UniformGrid>
+            </Grid>
+
+            <!-- 通用实体属性 -->
+            <StackPanel IsVisible="{Binding SpecialTiles.HasEntity}" Margin="4" Spacing="2">
+                <TextBlock Text="实体属性" FontWeight="Bold" Margin="2" />
+                <Grid ColumnDefinitions="Auto,Auto,Auto,Auto,*" >
+                    <TextBlock Grid.Column="0" Text="类型" VerticalAlignment="Center" Margin="2" Foreground="#AAAAAA" />
+                    <TextBlock Grid.Column="1" Text="{Binding SpecialTiles.SelectedTileEntity.EntityType}" Margin="2,2,8,2"
+                               VerticalAlignment="Center" />
+                    <TextBlock Grid.Column="2" Text="位置" VerticalAlignment="Center" Margin="2" Foreground="#AAAAAA" />
+                    <TextBlock Grid.Column="3" Margin="2"
+                               Text="{Binding SpecialTiles.EntityLocation}" />
+                </Grid>
+                <Grid ColumnDefinitions="Auto,*">
+                    <TextBlock Grid.Column="0" Text="NPC 编号" VerticalAlignment="Center" Margin="2" />
+                    <NumericUpDown Grid.Column="1" Minimum="-1" Maximum="2000" Increment="1" FormatString="0" Margin="2"
+                                   Value="{Binding SpecialTiles.SelectedTileEntity.Npc, Mode=TwoWay}" />
+                </Grid>
+            </StackPanel>
+
+            <!-- 物品框 -->
+            <StackPanel IsVisible="{Binding SpecialTiles.ShowEntityFrame}" Margin="4" Spacing="4">
+                <TextBlock Text="物品框内容" FontWeight="Bold" Margin="2" />
+                <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto">
+                    <TextBlock Grid.Row="0" Text="物品" VerticalAlignment="Center" Margin="2" />
+                    <c:ItemPickerView Grid.Row="0" Grid.Column="1" Height="120" Margin="2"
+                                      SelectedId="{Binding SpecialTiles.SelectedTileEntity.NetId, Mode=TwoWay}" />
+                    <TextBlock Grid.Row="1" Text="数量" VerticalAlignment="Center" Margin="2" />
+                    <NumericUpDown Grid.Row="1" Grid.Column="1" Minimum="0" Maximum="9999" Increment="1" FormatString="0" Margin="2"
+                                   Value="{Binding SpecialTiles.SelectedTileEntity.StackSize, Mode=TwoWay}" />
+                    <TextBlock Grid.Row="2" Text="前缀" VerticalAlignment="Center" Margin="2" />
+                    <NumericUpDown Grid.Row="2" Grid.Column="1" Minimum="0" Maximum="255" Increment="1" FormatString="0" Margin="2"
+                                   Value="{Binding SpecialTiles.SelectedTileEntity.Prefix, Mode=TwoWay}" />
+                </Grid>
+                <UniformGrid Columns="2">
+                    <Button Content="取消" Margin="5" HorizontalAlignment="Stretch"
+                            Command="{Binding SpecialTiles.SaveTileEntityCommand}" CommandParameter="False" />
+                    <Button Content="保存" Margin="5" HorizontalAlignment="Stretch"
+                            Command="{Binding SpecialTiles.SaveTileEntityCommand}" CommandParameter="True" />
+                </UniformGrid>
+            </StackPanel>
+
+            <!-- 带装备槽的实体 -->
+            <Grid IsVisible="{Binding SpecialTiles.ShowEntitySlots}" RowDefinitions="Auto,*,Auto,Auto" Margin="4">
+                <TextBlock Grid.Row="0" Text="装备槽" FontWeight="Bold" Margin="2" />
+                <ListBox Grid.Row="1" Margin="2" MinHeight="160"
+                         ItemsSource="{Binding SpecialTiles.SelectedTileEntity.Items}"
+                         SelectedItem="{Binding SpecialTiles.SelectedSlot, Mode=TwoWay}"
+                         Background="Transparent" BorderThickness="0">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate x:DataType="terraria:TileEntityItem">
+                            <Grid ColumnDefinitions="20,70,60,*,Auto">
+                                <Image Grid.Column="0" Width="16" Height="16" Margin="2" Stretch="Uniform"
+                                       Source="{Binding Id, Converter={StaticResource ItemIcon}}" />
+                                <NumericUpDown Grid.Column="1" Minimum="0" Maximum="6000" Increment="1" FormatString="0" Margin="2"
+                                               Value="{Binding Id, Mode=TwoWay}" />
+                                <NumericUpDown Grid.Column="2" Minimum="0" Maximum="9999" Increment="1" FormatString="0" Margin="2"
+                                               Value="{Binding StackSize, Mode=TwoWay}" />
+                                <TextBlock Grid.Column="3" Text="{Binding Name}" Margin="2" VerticalAlignment="Center"
+                                           TextTrimming="CharacterEllipsis" />
+                                <Button Grid.Column="4" Content="满堆叠" Margin="2,0" Padding="4,1" FontSize="11"
+                                        Command="{Binding $parent[UserControl].((vm:DocumentViewModel)DataContext).SpecialTiles.MaxStackEntityCommand}"
+                                        CommandParameter="{Binding}" />
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+                <c:ItemPickerView Grid.Row="2" Height="120" Margin="2"
+                                  IsVisible="{Binding SpecialTiles.SelectedSlot, Converter={x:Static ObjectConverters.IsNotNull}}"
+                                  SelectedId="{Binding SpecialTiles.SelectedSlot.Id, Mode=TwoWay}" />
+
+                <UniformGrid Grid.Row="3" Columns="2">
+                    <Button Content="取消" Margin="5" HorizontalAlignment="Stretch"
+                            Command="{Binding SpecialTiles.SaveTileEntityCommand}" CommandParameter="False" />
+                    <Button Content="保存" Margin="5" HorizontalAlignment="Stretch"
+                            Command="{Binding SpecialTiles.SaveTileEntityCommand}" CommandParameter="True" />
+                </UniformGrid>
+            </Grid>
+
+            <!-- 尚未移植的其他类型 -->
+            <TextBlock Text="这个特殊方块类型的编辑器尚未移植"
+                       TextWrapping="Wrap" Margin="6" Opacity="0.7"
+                       IsVisible="{Binding SpecialTiles.ShowUnported}" />
+        </Grid>
+    </DockPanel>
+</UserControl>

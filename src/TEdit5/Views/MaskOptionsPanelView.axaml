@@ -1,0 +1,150 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:TEdit5.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="420" d:DesignHeight="700"
+             x:Class="TEdit5.Views.MaskOptionsPanelView"
+             x:CompileBindings="False">
+    <!-- 移植自 TEdit/View/Sidebar/Controls/MaskOptionsPanelControl.xaml -->
+    <UserControl.Resources>
+        <DataTemplate x:Key="ColorPickerTemplate" x:DataType="vm:PaletteItem">
+            <StackPanel Orientation="Horizontal" Spacing="4">
+                <Border Width="14" Height="14" VerticalAlignment="Center"
+                        Background="{Binding Brush}" BorderThickness="1" BorderBrush="#666666" />
+                <TextBlock Text="{Binding Name}" VerticalAlignment="Center" />
+            </StackPanel>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <StackPanel Margin="4">
+
+        <!-- 方块 / 墙体 -->
+        <Grid ColumnDefinitions="*,4,*">
+            <StackPanel Grid.Column="0">
+                <TextBlock Text="方块" FontWeight="SemiBold" Margin="0,4,0,2" />
+                <ComboBox HorizontalAlignment="Stretch" Margin="0,0,0,4"
+                          ItemsSource="{Binding MaskModes}"
+                          SelectedItem="{Binding MaskSettings.TileMaskMode, Mode=TwoWay}" />
+                <ComboBox HorizontalAlignment="Stretch"
+                          ItemsSource="{Binding TileMaskItems}"
+                          SelectedItem="{Binding SelectedTileMaskItem, Mode=TwoWay}"
+                          ItemTemplate="{StaticResource ColorPickerTemplate}" />
+            </StackPanel>
+            <StackPanel Grid.Column="2">
+                <TextBlock Text="墙体" FontWeight="SemiBold" Margin="0,4,0,2" />
+                <ComboBox HorizontalAlignment="Stretch" Margin="0,0,0,4"
+                          ItemsSource="{Binding MaskModes}"
+                          SelectedItem="{Binding MaskSettings.WallMaskMode, Mode=TwoWay}" />
+                <ComboBox HorizontalAlignment="Stretch"
+                          ItemsSource="{Binding WallMaskItems}"
+                          SelectedItem="{Binding SelectedWallMaskItem, Mode=TwoWay}"
+                          ItemTemplate="{StaticResource ColorPickerTemplate}" />
+            </StackPanel>
+        </Grid>
+
+        <!-- 砖样式 -->
+        <TextBlock Text="砖样式" FontWeight="SemiBold" Margin="0,8,0,2" />
+        <Grid ColumnDefinitions="*,4,*">
+            <ComboBox Grid.Column="0" HorizontalAlignment="Stretch"
+                      ItemsSource="{Binding MaskModes}"
+                      SelectedItem="{Binding MaskSettings.BrickStyleMaskMode, Mode=TwoWay}" />
+            <ComboBox Grid.Column="2" HorizontalAlignment="Stretch"
+                      ItemsSource="{Binding BrickStyles}"
+                      SelectedItem="{Binding MaskSettings.BrickStyleMaskValue, Mode=TwoWay}" />
+        </Grid>
+
+        <!-- 漆 -->
+        <TextBlock Text="漆" FontWeight="SemiBold" Margin="0,8,0,2" />
+        <Grid ColumnDefinitions="*,4,*,4,*">
+            <ComboBox Grid.Column="0" HorizontalAlignment="Stretch"
+                      ItemsSource="{Binding MaskModes}"
+                      SelectedItem="{Binding MaskSettings.TilePaintMaskMode, Mode=TwoWay}" />
+            <ComboBox Grid.Column="2" HorizontalAlignment="Stretch"
+                      ItemsSource="{Binding PaintPaletteItems}"
+                      SelectedItem="{Binding SelectedTilePaintMaskItem, Mode=TwoWay}"
+                      ItemTemplate="{StaticResource ColorPickerTemplate}" />
+            <ComboBox Grid.Column="4" HorizontalAlignment="Stretch"
+                      ItemsSource="{Binding MaskModes}"
+                      SelectedItem="{Binding MaskSettings.WallPaintMaskMode, Mode=TwoWay}" />
+        </Grid>
+        <ComboBox HorizontalAlignment="Stretch" Margin="0,4,0,0"
+                  ItemsSource="{Binding PaintPaletteItems}"
+                  SelectedItem="{Binding SelectedWallPaintMaskItem, Mode=TwoWay}"
+                  ItemTemplate="{StaticResource ColorPickerTemplate}" />
+
+        <!-- 涂层 -->
+        <TextBlock Text="涂层" FontWeight="SemiBold" Margin="0,8,0,2" />
+        <Grid ColumnDefinitions="*,4,*,4,*" RowDefinitions="Auto,Auto">
+            <ComboBox Grid.Row="0" Grid.Column="0" HorizontalAlignment="Stretch" Margin="0,0,0,2"
+                      ItemsSource="{Binding MaskModes}"
+                      SelectedItem="{Binding MaskSettings.TileEchoMaskMode, Mode=TwoWay}" />
+            <TextBlock Grid.Row="0" Grid.Column="2" Text="回声 (方块)" VerticalAlignment="Center" Foreground="#AAAAAA" Margin="4,0" />
+            <ComboBox Grid.Row="0" Grid.Column="4" HorizontalAlignment="Stretch" Margin="0,0,0,2"
+                      ItemsSource="{Binding MaskModes}"
+                      SelectedItem="{Binding MaskSettings.WallEchoMaskMode, Mode=TwoWay}" />
+            <ComboBox Grid.Row="1" Grid.Column="0" HorizontalAlignment="Stretch"
+                      ItemsSource="{Binding MaskModes}"
+                      SelectedItem="{Binding MaskSettings.TileIlluminantMaskMode, Mode=TwoWay}" />
+            <TextBlock Grid.Row="1" Grid.Column="2" Text="发光 (墙体)" VerticalAlignment="Center" Foreground="#AAAAAA" Margin="4,0" />
+            <ComboBox Grid.Row="1" Grid.Column="4" HorizontalAlignment="Stretch"
+                      ItemsSource="{Binding MaskModes}"
+                      SelectedItem="{Binding MaskSettings.WallIlluminantMaskMode, Mode=TwoWay}" />
+        </Grid>
+
+        <!-- 附加 -->
+        <TextBlock Text="附加" FontWeight="SemiBold" Margin="0,8,0,2" />
+        <Grid ColumnDefinitions="*,4,*,4,*">
+            <ComboBox Grid.Column="0" HorizontalAlignment="Stretch"
+                      ItemsSource="{Binding MaskModes}"
+                      SelectedItem="{Binding MaskSettings.ActuatorMaskMode, Mode=TwoWay}" />
+            <TextBlock Grid.Column="2" Text="促动器" VerticalAlignment="Center" Foreground="#AAAAAA" Margin="4,0" />
+            <ComboBox Grid.Column="4" HorizontalAlignment="Stretch"
+                      ItemsSource="{Binding MaskModes}"
+                      SelectedItem="{Binding MaskSettings.ActuatorInActiveMaskMode, Mode=TwoWay}" />
+        </Grid>
+
+        <!-- 电线 -->
+        <TextBlock Text="电线" FontWeight="SemiBold" Margin="0,8,0,2" />
+        <Grid ColumnDefinitions="*,4,*,4,*" RowDefinitions="Auto,Auto">
+            <ComboBox Grid.Row="0" Grid.Column="0" HorizontalAlignment="Stretch" Margin="0,0,0,2"
+                      ItemsSource="{Binding MaskModes}"
+                      SelectedItem="{Binding MaskSettings.WireRedMaskMode, Mode=TwoWay}" />
+            <TextBlock Grid.Row="0" Grid.Column="2" Text="红电线" VerticalAlignment="Center" Foreground="#AAAAAA" Margin="4,0" />
+            <ComboBox Grid.Row="0" Grid.Column="4" HorizontalAlignment="Stretch" Margin="0,0,0,2"
+                      ItemsSource="{Binding MaskModes}"
+                      SelectedItem="{Binding MaskSettings.WireBlueMaskMode, Mode=TwoWay}" />
+            <ComboBox Grid.Row="1" Grid.Column="0" HorizontalAlignment="Stretch"
+                      ItemsSource="{Binding MaskModes}"
+                      SelectedItem="{Binding MaskSettings.WireGreenMaskMode, Mode=TwoWay}" />
+            <TextBlock Grid.Row="1" Grid.Column="2" Text="绿电线" VerticalAlignment="Center" Foreground="#AAAAAA" Margin="4,0" />
+            <ComboBox Grid.Row="1" Grid.Column="4" HorizontalAlignment="Stretch"
+                      ItemsSource="{Binding MaskModes}"
+                      SelectedItem="{Binding MaskSettings.WireYellowMaskMode, Mode=TwoWay}" />
+        </Grid>
+
+        <!-- 液体类型 / 液面 -->
+        <TextBlock Text="液体类型" FontWeight="SemiBold" Margin="0,8,0,2" />
+        <Grid ColumnDefinitions="*,4,*">
+            <ComboBox Grid.Column="0" HorizontalAlignment="Stretch"
+                      ItemsSource="{Binding MaskModes}"
+                      SelectedItem="{Binding MaskSettings.LiquidTypeMaskMode, Mode=TwoWay}" />
+            <ComboBox Grid.Column="2" HorizontalAlignment="Stretch"
+                      ItemsSource="{Binding LiquidTypes}"
+                      SelectedItem="{Binding MaskSettings.LiquidTypeMaskValue, Mode=TwoWay}" />
+        </Grid>
+
+        <TextBlock Text="液面高度" FontWeight="SemiBold" Margin="0,8,0,2" />
+        <Grid ColumnDefinitions="*,4,*">
+            <ComboBox Grid.Column="0" HorizontalAlignment="Stretch"
+                      ItemsSource="{Binding LiquidLevelMaskModes}"
+                      SelectedItem="{Binding MaskSettings.LiquidLevelMaskMode, Mode=TwoWay}" />
+            <DockPanel Grid.Column="2">
+                <TextBlock DockPanel.Dock="Right" VerticalAlignment="Center" Margin="4,0,0,0" MinWidth="25"
+                           Text="{Binding LiquidLevelMaskValue, StringFormat='{}{0:F0}'}" />
+                <Slider Minimum="0" Maximum="255" TickFrequency="1" IsSnapToTickEnabled="True"
+                        Value="{Binding LiquidLevelMaskValue, Mode=TwoWay}" VerticalAlignment="Center" />
+            </DockPanel>
+        </Grid>
+    </StackPanel>
+</UserControl>

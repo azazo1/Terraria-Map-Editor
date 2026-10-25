@@ -1,65 +1,123 @@
-﻿using Avalonia.Platform.Storage;
-using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Diagnostics;
 using System.Threading.Tasks;
-using TEdit5.ViewModels;
-using TEdit.Editor;
-using TEdit.Terraria;
+using Avalonia.Controls;
+using Avalonia.Platform.Storage;
 
 namespace TEdit5.Services;
 
+/// <summary>文件对话框与简单提示对话框. 视图模型只依赖这个接口, 不直接碰窗口.</summary>
 public interface IDialogService
 {
-    Task<string> OpenFileDialogAsync();
+    /// <summary>绑定当前顶层窗口, 由主窗口在打开时调用一次.</summary>
+    void AttachTo(TopLevel topLevel);
+
+    /// <summary>选择要打开的世界文件, 取消时返回 null.</summary>
+    Task<string?> PickWorldToOpenAsync();
+
+    /// <summary>选择要打开的玩家存档.</summary>
+    Task<string?> PickPlayerToOpenAsync();
+
+    /// <summary>选择玩家存档的保存位置.</summary>
+    Task<string?> PickPlayerToSaveAsync(string suggestedFileName);
+
+    /// <summary>选择另存为的路径, 取消时返回 null.</summary>
+    Task<string?> PickWorldToSaveAsync(string suggestedFileName);
 }
 
-public class DialogService : IDialogService
+public sealed class DialogService : IDialogService
 {
-    public async Task<string> OpenFileDialogAsync() => await Task.FromResult("test");
-}
-
-public interface IDocumentService
-{
-    ObservableCollection<DocumentViewModel> Documents { get; }
-    Task LoadWorldAsync(IStorageFile file, IProgress<ProgressChangedEventArgs>? progress = null);
-}
-
-
-public partial class DocumentService : ReactiveObject, IDocumentService
-{
-    private readonly IServiceScopeFactory _serviceScopeFactory;
-
-    public ObservableCollection<DocumentViewModel> Documents { get; } = new();
-
-    public DocumentService(IServiceScopeFactory serviceScopeFactory)
+    private static readonly FilePickerFileType WorldFileType = new("Terraria 世界文件")
     {
-        _serviceScopeFactory = serviceScopeFactory;
+        Patterns = new[] { "*.wld", "*.twld" },
+    };
+
+    private TopLevel? _topLevel;
+
+    public void AttachTo(TopLevel topLevel) => _topLevel = topLevel;
+
+    public async Task<string?> PickPlayerToOpenAsync()
+    {
+        if (_topLevel == null)
+        {
+            LogManager.Warn("文件对话框不可用: 尚未绑定顶层窗口.");
+            return null;
+        }
+
+        var files = await _topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+        {
+            Title = "打开玩家存档",
+            AllowMultiple = false,
+            FileTypeFilter = new[]
+            {
+                new FilePickerFileType("玩家存档")
+                {
+                    Patterns = new[] { "*.plr" },
+                },
+            },
+        });
+
+        return files.Count > 0 ? files[0].TryGetLocalPath() : null;
     }
 
-
-    public async Task LoadWorldAsync(IStorageFile file, IProgress<ProgressChangedEventArgs>? progress = null)
+    public async Task<string?> PickPlayerToSaveAsync(string suggestedFileName)
     {
-        using (var scope = _serviceScopeFactory.CreateScope())
+        if (_topLevel == null)
         {
-            var toolSelection = scope.ServiceProvider.GetRequiredService<ToolSelectionViewModel>();
-            var tilePicker = scope.ServiceProvider.GetRequiredService<TilePicker>();
-
-            (var world, var errors) = await World.LoadWorldAsync(file.TryGetLocalPath(), progress: progress);
-
-            if (world != null)
-            {
-                var document = new DocumentViewModel(world, toolSelection, tilePicker);
-
-                Documents.Add(document);
-            }
-
-            if (errors != null)
-            {
-                Debug.WriteLine("Error loading world: " + errors);
-            }
+            LogManager.Warn("文件对话框不可用: 尚未绑定顶层窗口.");
+            return null;
         }
+
+        var file = await _topLevel.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
+        {
+            Title = "保存玩家存档",
+            SuggestedFileName = suggestedFileName,
+            DefaultExtension = "plr",
+            FileTypeChoices = new[]
+            {
+                new FilePickerFileType("玩家存档")
+                {
+                    Patterns = new[] { "*.plr" },
+                },
+            },
+        });
+
+        return file?.TryGetLocalPath();
+    }
+
+    public async Task<string?> PickWorldToOpenAsync()
+    {
+        if (_topLevel == null)
+        {
+            LogManager.Warn("文件对话框不可用: 尚未绑定顶层窗口.");
+            return null;
+        }
+
+        var files = await _topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+        {
+            Title = "打开世界",
+            AllowMultiple = false,
+            FileTypeFilter = new[] { WorldFileType },
+        });
+
+        return files.Count > 0 ? files[0].TryGetLocalPath() : null;
+    }
+
+    public async Task<string?> PickWorldToSaveAsync(string suggestedFileName)
+    {
+        if (_topLevel == null)
+        {
+            LogManager.Warn("文件对话框不可用: 尚未绑定顶层窗口.");
+            return null;
+        }
+
+        var file = await _topLevel.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
+        {
+            Title = "保存世界",
+            SuggestedFileName = suggestedFileName,
+            DefaultExtension = "wld",
+            FileTypeChoices = new[] { WorldFileType },
+            ShowOverwritePrompt = true,
+        });
+
+        return file?.TryGetLocalPath();
     }
 }

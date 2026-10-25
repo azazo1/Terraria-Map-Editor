@@ -1,4 +1,4 @@
-﻿using Avalonia;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Presenters;
@@ -528,7 +528,65 @@ public class SkiaWorldRenderBox : TemplatedControl, IScrollable
     public void TriggerRender(bool renderOnlyCursorTracker = false)
     {
         if (renderOnlyCursorTracker) return;
-        InvalidateVisual();
+        QueueInvalidate();
+    }
+
+    /// <summary>
+    /// 标记世界中的一块方块需要重绘. 参数是世界方块坐标, 与光栅缓存的像素坐标一致.
+    /// </summary>
+    public void NotifyTilesChanged(int x, int y, int width = 1, int height = 1)
+    {
+        if (_world == null || _pixelTileCache == null) return;
+
+        int endX = Math.Min(x + width, _world.TilesWide);
+        int endY = Math.Min(y + height, _world.TilesHigh);
+        int startX = Math.Max(x, 0);
+        int startY = Math.Max(y, 0);
+
+        _pixelTileCache.SetWorldRegionDirty(startX, startY, endX - startX, endY - startY);
+
+        TriggerRender();
+    }
+
+    private bool _invalidateQueued;
+
+    /// <summary>
+    /// 把重绘请求合并到下一帧, 避免一次操作里反复排队.
+    /// </summary>
+    private void QueueInvalidate()
+    {
+        if (_invalidateQueued)
+        {
+            return;
+        }
+
+        _invalidateQueued = true;
+        Dispatcher.UIThread.Post(
+            () =>
+            {
+                _invalidateQueued = false;
+                InvalidateVisual();
+            },
+            DispatcherPriority.Background);
+    }
+
+    /// <summary>
+    /// 把整幅世界标记为脏, 用于撤销/重做这类成片变化.
+    /// </summary>
+    public void NotifyWorldChanged()
+    {
+        var cache = _pixelTileCache;
+        if (cache == null) return;
+
+        for (int ty = 0; ty < cache.TilesY; ty++)
+        {
+            for (int tx = 0; tx < cache.TilesX; tx++)
+            {
+                cache.SetPixelDirty(tx * cache.TileSizeX, ty * cache.TileSizeY);
+            }
+        }
+
+        TriggerRender();
     }
 
     Brush redBrush = new Avalonia.Media.SolidColorBrush(Colors.Red, 0.5d);
@@ -542,7 +600,10 @@ public class SkiaWorldRenderBox : TemplatedControl, IScrollable
         var viewport = Bounds;
 
         context.Custom(new NoSkiaCustomDrawOp(viewport, _noSkia));
-        context.Custom(new BackgroundGridCustomDrawOp(viewport));
+        if (BackgroundGridCustomDrawOp.Visible)
+        {
+            context.Custom(new BackgroundGridCustomDrawOp(viewport));
+        }
 
         context.Custom(new WorldPixelsCustomDrawOp(
             imageViewPort,
@@ -580,7 +641,7 @@ public class SkiaWorldRenderBox : TemplatedControl, IScrollable
             context.DrawRectangle(redBrush, null, bottomRect);
         }
 
-        Dispatcher.UIThread.InvokeAsync(InvalidateVisual, DispatcherPriority.Background);
+        QueueInvalidate();
     }
 
 
@@ -859,7 +920,28 @@ public class SkiaWorldRenderBox : TemplatedControl, IScrollable
             var previousZoom = Zoom;
             if (previousZoom == newZoom) return;
 
+            // 缩放时保持视口中心对应的世界位置不动, 避免画面跳走.
+            double centerWorldX = 0;
+            double centerWorldY = 0;
+            bool keepCenter = World != null && Bounds.Width > 0 && Bounds.Height > 0;
+
+            if (keepCenter)
+            {
+                double oldScale = previousZoom / 100d;
+                centerWorldX = (Offset.X + Bounds.Width / 2) / oldScale;
+                centerWorldY = (Offset.Y + Bounds.Height / 2) / oldScale;
+            }
+
             SetValue(ZoomProperty, newZoom);
+
+            if (keepCenter)
+            {
+                double newScale = newZoom / 100d;
+                Offset = new Vector(
+                    centerWorldX * newScale - Bounds.Width / 2,
+                    centerWorldY * newScale - Bounds.Height / 2);
+            }
+
             UpdateViewPort();
             TriggerRender();
         }
@@ -871,6 +953,14 @@ public class SkiaWorldRenderBox : TemplatedControl, IScrollable
     /// <summary>
     /// Gets the zoom to fit level which shows all the image
     /// </summary>
+    /// <summary>缩放到能看下整个世界并回到左上角.</summary>
+    public void ZoomToFit()
+    {
+        Zoom = ZoomLevelToFit;
+        Offset = new Vector(0, 0);
+        InvalidateVisual();
+    }
+
     public int ZoomLevelToFit
     {
         get
@@ -1304,6 +1394,8 @@ public class SkiaWorldRenderBox : TemplatedControl, IScrollable
         _startMousePosition = location;
     }
 
+    private Point? _lastPointerTile;
+
     private void ViewPortOnPointerMoved(object? sender, PointerEventArgs e)
     {
         if (e.Handled) return;
@@ -1311,7 +1403,17 @@ public class SkiaWorldRenderBox : TemplatedControl, IScrollable
         var pointer = e.GetCurrentPoint(ViewPort);
         _pointerPosition = pointer.Position;
         (double wcX, double wcY) = PointToImage(_pointerPosition, true);
-        WorldCoordinate = new Point((int)wcX, (int)wcY); // cast to int
+
+        // 同一格内移动不重复刷新, 减少悬停时的无谓重绘.
+        var tile = new Point((int)wcX, (int)wcY);
+        bool tileChanged = _lastPointerTile != tile;
+        _lastPointerTile = tile;
+
+        // 同一格内不重复触发坐标变化通知, 避免状态栏抖动.
+        if (tileChanged)
+        {
+            WorldCoordinate = tile; // cast to int
+        }
 
         if (ActiveTool != null)
         {
@@ -1321,7 +1423,11 @@ public class SkiaWorldRenderBox : TemplatedControl, IScrollable
 
         if (!_isPanning && !_isSelecting)
         {
-            TriggerRender(true);
+            if (tileChanged)
+            {
+                TriggerRender(true);
+            }
+
             return;
         }
 

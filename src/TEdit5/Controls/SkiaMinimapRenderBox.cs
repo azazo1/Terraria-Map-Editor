@@ -40,7 +40,10 @@ public class SkiaMinimapRenderBox : Control
 
         var viewport = Bounds;
         context.Custom(new NoSkiaCustomDrawOp(viewport, _noSkia));
-        context.Custom(new BackgroundGridCustomDrawOp(viewport, 4));
+        if (BackgroundGridCustomDrawOp.Visible)
+        {
+            context.Custom(new BackgroundGridCustomDrawOp(viewport, 4));
+        }
         context.Custom(new MinimapPixelsCustomDrawOp(viewport, World));
 
         Dispatcher.UIThread.InvokeAsync(InvalidateVisual, DispatcherPriority.Background);

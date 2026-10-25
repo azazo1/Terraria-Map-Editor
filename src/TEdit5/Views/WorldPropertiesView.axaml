@@ -2,19 +2,455 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:c="clr-namespace:TEdit5.Controls"
              xmlns:vm="using:TEdit5.ViewModels"
-             xmlns:pgc="clr-namespace:Avalonia.PropertyGrid.Controls;assembly=Avalonia.PropertyGrid"
-             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="450"
+             mc:Ignorable="d" d:DesignWidth="360" d:DesignHeight="600"
              x:Class="TEdit5.Views.WorldPropertiesView"
              x:DataType="vm:DocumentViewModel">
-    <Grid RowDefinitions="*,20">
-        <ScrollViewer Grid.Row="0">
-            <pgc:PropertyGrid
-                x:Name="worldProps"
-                Margin="4"
-                DataContext="{Binding World}">
-            </pgc:PropertyGrid>
-        </ScrollViewer>
-    </Grid>
+    <UserControl.Styles>
+        <Style Selector="TextBlock.label">
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Foreground" Value="#AAAAAA" />
+            <Setter Property="Margin" Value="0,2,8,2" />
+        </Style>
+        <Style Selector="TextBlock.value">
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="Margin" Value="0,2" />
+        </Style>
+        <Style Selector="TextBlock.section">
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="Margin" Value="0,10,0,4" />
+            <Setter Property="Foreground" Value="#E0E0E0" />
+        </Style>
+    </UserControl.Styles>
+
+    <ScrollViewer>
+        <StackPanel Margin="8" Spacing="2">
+
+            <TextBlock Classes="section" Text="世界" />
+
+            <Grid ColumnDefinitions="96,*" RowDefinitions="Auto">
+                <TextBlock Grid.Column="0" Classes="label" Text="名称" />
+                <TextBox Grid.Column="1" Margin="0,2"
+                         Text="{Binding WorldTitle, Mode=TwoWay}" />
+            </Grid>
+
+            <Grid ColumnDefinitions="96,*">
+                <TextBlock Grid.Column="0" Classes="label" Text="文件" />
+                <TextBlock Grid.Column="1" Classes="value" Text="{Binding FileName}" />
+            </Grid>
+
+            <Grid ColumnDefinitions="96,*">
+                <TextBlock Grid.Column="0" Classes="label" Text="状态" />
+                <TextBlock Grid.Column="1" Classes="value" Text="{Binding DirtyText}" />
+            </Grid>
+
+            <Grid ColumnDefinitions="96,*">
+                <TextBlock Grid.Column="0" Classes="label" Text="种子" />
+                <TextBlock Grid.Column="1" Classes="value" Text="{Binding SeedText}" />
+            </Grid>
+
+            <Grid ColumnDefinitions="96,*">
+                <TextBlock Grid.Column="0" Classes="label" Text="版本" />
+                <TextBlock Grid.Column="1" Classes="value" Text="{Binding VersionText}" />
+            </Grid>
+
+            <Grid ColumnDefinitions="96,*">
+                <TextBlock Grid.Column="0" Classes="label" Text="尺寸" />
+                <TextBlock Grid.Column="1" Classes="value" Text="{Binding SizeText}" />
+            </Grid>
+
+            <Grid ColumnDefinitions="96,*">
+                <TextBlock Grid.Column="0" Classes="label" Text="出生点" />
+                <TextBlock Grid.Column="1" Classes="value" Text="{Binding SpawnText}" />
+            </Grid>
+
+            <Grid ColumnDefinitions="96,*">
+                <TextBlock Grid.Column="0" Classes="label" Text="世界编号" />
+                <TextBlock Grid.Column="1" Classes="value" Text="{Binding WorldIdText}" />
+            </Grid>
+
+            <Grid ColumnDefinitions="96,*">
+                <TextBlock Grid.Column="0" Classes="label" Text="GUID" />
+                <TextBlock Grid.Column="1" Classes="value" Text="{Binding GuidText}" />
+            </Grid>
+
+            <TextBlock Classes="section" Text="地形分界" />
+
+            <Grid ColumnDefinitions="96,*">
+                <TextBlock Grid.Column="0" Classes="label" Text="地表高度" />
+                <TextBlock Grid.Column="1" Classes="value" Text="{Binding GroundLevelText}" />
+            </Grid>
+
+            <Grid ColumnDefinitions="96,*">
+                <TextBlock Grid.Column="0" Classes="label" Text="岩石层高度" />
+                <TextBlock Grid.Column="1" Classes="value" Text="{Binding RockLevelText}" />
+            </Grid>
+
+
+            <TextBlock Classes="section" Text="时间与天气" />
+
+            <Grid ColumnDefinitions="96,*">
+                <TextBlock Grid.Column="0" Classes="label" Text="月相" />
+                <TextBox Grid.Column="1" Margin="0,2" Text="{Binding World.MoonPhase, Mode=TwoWay}" />
+            </Grid>
+            <Grid ColumnDefinitions="96,*">
+                <TextBlock Grid.Column="0" Classes="label" Text="月亮样式" />
+                <TextBox Grid.Column="1" Margin="0,2" Text="{Binding World.MoonType, Mode=TwoWay}" />
+            </Grid>
+            <Grid ColumnDefinitions="96,*">
+                <TextBlock Grid.Column="0" Classes="label" Text="时间" />
+                <TextBox Grid.Column="1" Margin="0,2" Text="{Binding World.DayTime, Mode=TwoWay}" />
+            </Grid>
+            <CheckBox Content="血月" Margin="0,2" IsChecked="{Binding World.BloodMoon, Mode=TwoWay}" />
+            <CheckBox Content="日食" Margin="0,2" IsChecked="{Binding World.IsEclipse, Mode=TwoWay}" />
+            <CheckBox Content="正在下雨" Margin="0,2" IsChecked="{Binding World.IsRaining, Mode=TwoWay}" />
+            <Grid ColumnDefinitions="96,*">
+                <TextBlock Grid.Column="0" Classes="label" Text="雨时长" />
+                <TextBox Grid.Column="1" Margin="0,2" Text="{Binding World.TempRainTime, Mode=TwoWay}" />
+            </Grid>
+            <Grid ColumnDefinitions="96,*">
+                <TextBlock Grid.Column="0" Classes="label" Text="雨强度" />
+                <TextBox Grid.Column="1" Margin="0,2" Text="{Binding World.TempMaxRain, Mode=TwoWay}" />
+            </Grid>
+            <Grid ColumnDefinitions="96,*">
+                <TextBlock Grid.Column="0" Classes="label" Text="史莱姆雨" />
+                <TextBox Grid.Column="1" Margin="0,2" Text="{Binding World.SlimeRainTime, Mode=TwoWay}" />
+            </Grid>
+            <Grid ColumnDefinitions="96,*">
+                <TextBlock Grid.Column="0" Classes="label" Text="云数量" />
+                <TextBox Grid.Column="1" Margin="0,2" Text="{Binding World.NumClouds, Mode=TwoWay}" />
+            </Grid>
+            <Grid ColumnDefinitions="96,*">
+                <TextBlock Grid.Column="0" Classes="label" Text="风力" />
+                <TextBox Grid.Column="1" Margin="0,2" Text="{Binding World.WindSpeedSet, Mode=TwoWay}" />
+            </Grid>
+            <CheckBox Content="快进时间" Margin="0,2" IsChecked="{Binding World.FastForwardTime, Mode=TwoWay}" />
+            <CheckBox Content="快进到黄昏" Margin="0,2" IsChecked="{Binding World.FastForwardTimeToDusk, Mode=TwoWay}" />
+            <CheckBox Content="沙尘暴" Margin="0,2" IsChecked="{Binding World.SandStormHappening, Mode=TwoWay}" />
+            <Grid ColumnDefinitions="96,*">
+                <TextBlock Grid.Column="0" Classes="label" Text="沙尘暴时长" />
+                <TextBox Grid.Column="1" Margin="0,2" Text="{Binding World.SandStormTimeLeft, Mode=TwoWay}" />
+            </Grid>
+            <Grid ColumnDefinitions="96,*">
+                <TextBlock Grid.Column="0" Classes="label" Text="沙尘暴强度" />
+                <TextBox Grid.Column="1" Margin="0,2" Text="{Binding World.SandStormSeverity, Mode=TwoWay}" />
+            </Grid>
+
+            <TextBlock Classes="section" Text="事件与进度" />
+
+            <Grid ColumnDefinitions="96,*">
+                <TextBlock Grid.Column="0" Classes="label" Text="入侵类型" />
+                <TextBox Grid.Column="1" Margin="0,2" Text="{Binding World.InvasionType, Mode=TwoWay}" />
+            </Grid>
+            <Grid ColumnDefinitions="96,*">
+                <TextBlock Grid.Column="0" Classes="label" Text="入侵规模" />
+                <TextBox Grid.Column="1" Margin="0,2" Text="{Binding World.InvasionSize, Mode=TwoWay}" />
+            </Grid>
+            <Grid ColumnDefinitions="96,*">
+                <TextBlock Grid.Column="0" Classes="label" Text="入侵位置" />
+                <TextBox Grid.Column="1" Margin="0,2" Text="{Binding World.InvasionX, Mode=TwoWay}" />
+            </Grid>
+            <Grid ColumnDefinitions="96,*">
+                <TextBlock Grid.Column="0" Classes="label" Text="游戏模式" />
+                <TextBox Grid.Column="1" Margin="0,2" Text="{Binding World.GameMode, Mode=TwoWay}" />
+            </Grid>
+            <Grid ColumnDefinitions="96,*">
+                <TextBlock Grid.Column="0" Classes="label" Text="祭坛数" />
+                <TextBox Grid.Column="1" Margin="0,2" Text="{Binding World.AltarCount, Mode=TwoWay}" />
+            </Grid>
+            <Grid ColumnDefinitions="96,*">
+                <TextBlock Grid.Column="0" Classes="label" Text="暗影球数" />
+                <TextBox Grid.Column="1" Margin="0,2" Text="{Binding World.ShadowOrbCount, Mode=TwoWay}" />
+            </Grid>
+            <CheckBox Content="困难模式" Margin="0,2" IsChecked="{Binding World.HardMode, Mode=TwoWay}" />
+            <CheckBox Content="陨石已落" Margin="0,2" IsChecked="{Binding World.SpawnMeteor, Mode=TwoWay}" />
+            <Grid ColumnDefinitions="96,*">
+                <TextBlock Grid.Column="0" Classes="label" Text="邪教徒延迟" />
+                <TextBox Grid.Column="1" Margin="0,2" Text="{Binding World.CultistDelay, Mode=TwoWay}" />
+            </Grid>
+            <CheckBox Content="天启" Margin="0,2" IsChecked="{Binding World.Apocalypse, Mode=TwoWay}" />
+            <CheckBox Content="队伍出生点已配置" Margin="0,2" IsChecked="{Binding World.TeamSpawns, Mode=TwoWay}" />
+
+            <TextBlock Classes="section" Text="矿石层级" />
+
+            <Grid ColumnDefinitions="96,*">
+                <TextBlock Grid.Column="0" Classes="label" Text="铜" />
+                <TextBox Grid.Column="1" Margin="0,2" Text="{Binding World.SavedOreTiersCopper, Mode=TwoWay}" />
+            </Grid>
+            <Grid ColumnDefinitions="96,*">
+                <TextBlock Grid.Column="0" Classes="label" Text="铁" />
+                <TextBox Grid.Column="1" Margin="0,2" Text="{Binding World.SavedOreTiersIron, Mode=TwoWay}" />
+            </Grid>
+            <Grid ColumnDefinitions="96,*">
+                <TextBlock Grid.Column="0" Classes="label" Text="银" />
+                <TextBox Grid.Column="1" Margin="0,2" Text="{Binding World.SavedOreTiersSilver, Mode=TwoWay}" />
+            </Grid>
+            <Grid ColumnDefinitions="96,*">
+                <TextBlock Grid.Column="0" Classes="label" Text="金" />
+                <TextBox Grid.Column="1" Margin="0,2" Text="{Binding World.SavedOreTiersGold, Mode=TwoWay}" />
+            </Grid>
+            <Grid ColumnDefinitions="96,*">
+                <TextBlock Grid.Column="0" Classes="label" Text="钴" />
+                <TextBox Grid.Column="1" Margin="0,2" Text="{Binding World.SavedOreTiersCobalt, Mode=TwoWay}" />
+            </Grid>
+            <Grid ColumnDefinitions="96,*">
+                <TextBlock Grid.Column="0" Classes="label" Text="秘银" />
+                <TextBox Grid.Column="1" Margin="0,2" Text="{Binding World.SavedOreTiersMythril, Mode=TwoWay}" />
+            </Grid>
+            <Grid ColumnDefinitions="96,*">
+                <TextBlock Grid.Column="0" Classes="label" Text="精金" />
+                <TextBox Grid.Column="1" Margin="0,2" Text="{Binding World.SavedOreTiersAdamantite, Mode=TwoWay}" />
+            </Grid>
+
+            <TextBlock Classes="section" Text="Boss 击败记录" />
+
+            <CheckBox Content="史莱姆王" Margin="0,2" IsChecked="{Binding World.DownedSlimeKingBoss, Mode=TwoWay}" />
+            <CheckBox Content="克苏鲁之眼" Margin="0,2" IsChecked="{Binding World.DownedBoss1EyeofCthulhu, Mode=TwoWay}" />
+            <CheckBox Content="世界吞噬者" Margin="0,2" IsChecked="{Binding World.DownedBoss2EaterofWorlds, Mode=TwoWay}" />
+            <CheckBox Content="蜂后" Margin="0,2" IsChecked="{Binding World.DownedQueenBee, Mode=TwoWay}" />
+            <CheckBox Content="骷髅王" Margin="0,2" IsChecked="{Binding World.DownedBoss3Skeletron, Mode=TwoWay}" />
+            <CheckBox Content="双子魔眼" Margin="0,2" IsChecked="{Binding World.DownedMechBoss2TheTwins, Mode=TwoWay}" />
+            <CheckBox Content="毁灭者" Margin="0,2" IsChecked="{Binding World.DownedMechBoss1TheDestroyer, Mode=TwoWay}" />
+            <CheckBox Content="机械骷髅王" Margin="0,2" IsChecked="{Binding World.DownedMechBoss3SkeletronPrime, Mode=TwoWay}" />
+            <CheckBox Content="世纪之花" Margin="0,2" IsChecked="{Binding World.DownedPlantBoss, Mode=TwoWay}" />
+            <CheckBox Content="石巨人" Margin="0,2" IsChecked="{Binding World.DownedGolemBoss, Mode=TwoWay}" />
+            <CheckBox Content="猪龙鱼公爵" Margin="0,2" IsChecked="{Binding World.DownedFishron, Mode=TwoWay}" />
+            <CheckBox Content="拜月教邪教徒" Margin="0,2" IsChecked="{Binding World.DownedLunaticCultist, Mode=TwoWay}" />
+            <CheckBox Content="月亮领主" Margin="0,2" IsChecked="{Binding World.DownedMoonlord, Mode=TwoWay}" />
+            <CheckBox Content="光之女皇" Margin="0,2" IsChecked="{Binding World.DownedEmpressOfLight, Mode=TwoWay}" />
+            <CheckBox Content="史莱姆皇后" Margin="0,2" IsChecked="{Binding World.DownedQueenSlime, Mode=TwoWay}" />
+            <CheckBox Content="独眼巨鹿" Margin="0,2" IsChecked="{Binding World.DownedDeerclops, Mode=TwoWay}" />
+
+
+            <TextBlock Classes="section" Text="世界类型与种子" />
+
+            <CheckBox Content="腐化世界" Margin="0,2" IsChecked="{Binding World.IsCrimson, Mode=TwoWay}" />
+            <CheckBox Content="简体中文" Margin="0,2" IsChecked="{Binding World.IsChinese, Mode=TwoWay}" />
+            <CheckBox Content="主机版世界" Margin="0,2" IsChecked="{Binding World.IsConsole, Mode=TwoWay}" />
+            <CheckBox Content="醉酒世界" Margin="0,2" IsChecked="{Binding World.DrunkWorld, Mode=TwoWay}" />
+            <CheckBox Content="善良世界" Margin="0,2" IsChecked="{Binding World.GoodWorld, Mode=TwoWay}" />
+            <CheckBox Content="十周年世界" Margin="0,2" IsChecked="{Binding World.TenthAnniversaryWorld, Mode=TwoWay}" />
+            <CheckBox Content="饥荒世界" Margin="0,2" IsChecked="{Binding World.DontStarveWorld, Mode=TwoWay}" />
+            <CheckBox Content="不是蜜蜂世界" Margin="0,2" IsChecked="{Binding World.NotTheBeesWorld, Mode=TwoWay}" />
+            <CheckBox Content="混搭世界" Margin="0,2" IsChecked="{Binding World.RemixWorld, Mode=TwoWay}" />
+            <CheckBox Content="无陷阱世界" Margin="0,2" IsChecked="{Binding World.NoTrapsWorld, Mode=TwoWay}" />
+            <CheckBox Content="天顶世界" Margin="0,2" IsChecked="{Binding World.ZenithWorld, Mode=TwoWay}" />
+            <CheckBox Content="空岛世界" Margin="0,2" IsChecked="{Binding World.SkyblockWorld, Mode=TwoWay}" />
+            <CheckBox Content="吸血鬼种子" Margin="0,2" IsChecked="{Binding World.VampireSeed, Mode=TwoWay}" />
+            <CheckBox Content="感染种子" Margin="0,2" IsChecked="{Binding World.InfectedSeed, Mode=TwoWay}" />
+            <CheckBox Content="双地牢种子" Margin="0,2" IsChecked="{Binding World.DualDungeonsSeed, Mode=TwoWay}" />
+            <CheckBox Content="更多闪电" Margin="0,2" IsChecked="{Binding World.MoreLightningSeed, Mode=TwoWay}" />
+            <CheckBox Content="没有闪电" Margin="0,2" IsChecked="{Binding World.NoLightningSeed, Mode=TwoWay}" />
+            <CheckBox Content="队伍出生点" Margin="0,2" IsChecked="{Binding World.TeamBasedSpawnsSeed, Mode=TwoWay}" />
+
+            <TextBlock Classes="section" Text="时间冷却与灯笼夜" />
+
+            <Grid ColumnDefinitions="96,*">
+                <TextBlock Grid.Column="0" Classes="label" Text="日晷冷却" />
+                <TextBox Grid.Column="1" Margin="0,2" Text="{Binding World.SundialCooldown, Mode=TwoWay}" />
+            </Grid>
+            <Grid ColumnDefinitions="96,*">
+                <TextBlock Grid.Column="0" Classes="label" Text="月晷冷却" />
+                <TextBox Grid.Column="1" Margin="0,2" Text="{Binding World.MoondialCooldown, Mode=TwoWay}" />
+            </Grid>
+            <CheckBox Content="云背景" Margin="0,2" IsChecked="{Binding World.CloudBgActive, Mode=TwoWay}" />
+            <CheckBox Content="强制万圣节" Margin="0,2" IsChecked="{Binding World.ForceHalloweenForToday, Mode=TwoWay}" />
+            <CheckBox Content="强制圣诞节" Margin="0,2" IsChecked="{Binding World.ForceXMasForToday, Mode=TwoWay}" />
+            <CheckBox Content="永久万圣节" Margin="0,2" IsChecked="{Binding World.ForceHalloweenForever, Mode=TwoWay}" />
+            <CheckBox Content="永久圣诞节" Margin="0,2" IsChecked="{Binding World.ForceXMasForever, Mode=TwoWay}" />
+            <CheckBox Content="灯笼夜 (手动)" Margin="0,2" IsChecked="{Binding World.LanternNightManual, Mode=TwoWay}" />
+            <CheckBox Content="灯笼夜 (真实)" Margin="0,2" IsChecked="{Binding World.LanternNightGenuine, Mode=TwoWay}" />
+            <CheckBox Content="下一夜灯笼夜为真实" Margin="0,2" IsChecked="{Binding World.LanternNightNextNightIsGenuine, Mode=TwoWay}" />
+            <Grid ColumnDefinitions="96,*">
+                <TextBlock Grid.Column="0" Classes="label" Text="灯笼夜冷却" />
+                <TextBox Grid.Column="1" Margin="0,2" Text="{Binding World.LanternNightCooldown, Mode=TwoWay}" />
+            </Grid>
+
+            <TextBlock Classes="section" Text="已保存的 NPC" />
+
+            <UniformGrid Columns="2">
+                <CheckBox Content="哥布林工匠" Margin="0,2" IsChecked="{Binding World.SavedGoblin, Mode=TwoWay}" />
+                <CheckBox Content="机械师" Margin="0,2" IsChecked="{Binding World.SavedMech, Mode=TwoWay}" />
+                <CheckBox Content="巫师" Margin="0,2" IsChecked="{Binding World.SavedWizard, Mode=TwoWay}" />
+                <CheckBox Content="发型师" Margin="0,2" IsChecked="{Binding World.SavedStylist, Mode=TwoWay}" />
+                <CheckBox Content="税收官" Margin="0,2" IsChecked="{Binding World.SavedTaxCollector, Mode=TwoWay}" />
+                <CheckBox Content="酒保" Margin="0,2" IsChecked="{Binding World.SavedBartender, Mode=TwoWay}" />
+                <CheckBox Content="渔夫" Margin="0,2" IsChecked="{Binding World.SavedAngler, Mode=TwoWay}" />
+                <CheckBox Content="高尔夫球手" Margin="0,2" IsChecked="{Binding World.SavedGolfer, Mode=TwoWay}" />
+                <CheckBox Content="猫" Margin="0,2" IsChecked="{Binding World.BoughtCat, Mode=TwoWay}" />
+                <CheckBox Content="狗" Margin="0,2" IsChecked="{Binding World.BoughtDog, Mode=TwoWay}" />
+                <CheckBox Content="兔子" Margin="0,2" IsChecked="{Binding World.BoughtBunny, Mode=TwoWay}" />
+            </UniformGrid>
+
+            <Grid ColumnDefinitions="96,*">
+                <TextBlock Grid.Column="0" Classes="label" Text="渔夫任务" />
+                <TextBox Grid.Column="1" Margin="0,2" Text="{Binding World.AnglerQuest, Mode=TwoWay}" />
+            </Grid>
+
+            <TextBlock Classes="section" Text="已解锁的 NPC" />
+
+            <UniformGrid Columns="2">
+                <CheckBox Content="商人" Margin="0,2" IsChecked="{Binding World.UnlockedMerchantSpawn, Mode=TwoWay}" />
+                <CheckBox Content="爆破专家" Margin="0,2" IsChecked="{Binding World.UnlockedDemolitionistSpawn, Mode=TwoWay}" />
+                <CheckBox Content="派对女孩" Margin="0,2" IsChecked="{Binding World.UnlockedPartyGirlSpawn, Mode=TwoWay}" />
+                <CheckBox Content="染料商" Margin="0,2" IsChecked="{Binding World.UnlockedDyeTraderSpawn, Mode=TwoWay}" />
+                <CheckBox Content="松露人" Margin="0,2" IsChecked="{Binding World.UnlockedTruffleSpawn, Mode=TwoWay}" />
+                <CheckBox Content="军火商" Margin="0,2" IsChecked="{Binding World.UnlockedArmsDealerSpawn, Mode=TwoWay}" />
+                <CheckBox Content="护士" Margin="0,2" IsChecked="{Binding World.UnlockedNurseSpawn, Mode=TwoWay}" />
+                <CheckBox Content="公主" Margin="0,2" IsChecked="{Binding World.UnlockedPrincessSpawn, Mode=TwoWay}" />
+                <CheckBox Content="蓝史莱姆" Margin="0,2" IsChecked="{Binding World.UnlockedSlimeBlueSpawn, Mode=TwoWay}" />
+                <CheckBox Content="绿史莱姆" Margin="0,2" IsChecked="{Binding World.UnlockedSlimeGreenSpawn, Mode=TwoWay}" />
+                <CheckBox Content="紫史莱姆" Margin="0,2" IsChecked="{Binding World.UnlockedSlimePurpleSpawn, Mode=TwoWay}" />
+                <CheckBox Content="彩虹史莱姆" Margin="0,2" IsChecked="{Binding World.UnlockedSlimeRainbowSpawn, Mode=TwoWay}" />
+                <CheckBox Content="红史莱姆" Margin="0,2" IsChecked="{Binding World.UnlockedSlimeRedSpawn, Mode=TwoWay}" />
+                <CheckBox Content="黄史莱姆" Margin="0,2" IsChecked="{Binding World.UnlockedSlimeYellowSpawn, Mode=TwoWay}" />
+                <CheckBox Content="铜史莱姆" Margin="0,2" IsChecked="{Binding World.UnlockedSlimeCopperSpawn, Mode=TwoWay}" />
+            </UniformGrid>
+
+            <TextBlock Classes="section" Text="入侵与事件记录" />
+
+            <UniformGrid Columns="2">
+                <CheckBox Content="哥布林入侵" Margin="0,2" IsChecked="{Binding World.DownedGoblins, Mode=TwoWay}" />
+                <CheckBox Content="霜月" Margin="0,2" IsChecked="{Binding World.DownedFrost, Mode=TwoWay}" />
+                <CheckBox Content="海盗入侵" Margin="0,2" IsChecked="{Binding World.DownedPirates, Mode=TwoWay}" />
+                <CheckBox Content="火星入侵" Margin="0,2" IsChecked="{Binding World.DownedMartians, Mode=TwoWay}" />
+                <CheckBox Content="撒旦军 T1" Margin="0,2" IsChecked="{Binding World.DownedDD2InvasionT1, Mode=TwoWay}" />
+                <CheckBox Content="撒旦军 T2" Margin="0,2" IsChecked="{Binding World.DownedDD2InvasionT2, Mode=TwoWay}" />
+                <CheckBox Content="撒旦军 T3" Margin="0,2" IsChecked="{Binding World.DownedDD2InvasionT3, Mode=TwoWay}" />
+                <CheckBox Content="南瓜月" Margin="0,2" IsChecked="{Binding World.DownedHalloweenTree, Mode=TwoWay}" />
+                <CheckBox Content="无头骑士" Margin="0,2" IsChecked="{Binding World.DownedHalloweenKing, Mode=TwoWay}" />
+                <CheckBox Content="常青树" Margin="0,2" IsChecked="{Binding World.DownedChristmasTree, Mode=TwoWay}" />
+                <CheckBox Content="冰女王" Margin="0,2" IsChecked="{Binding World.DownedChristmasQueen, Mode=TwoWay}" />
+                <CheckBox Content="圣诞老人" Margin="0,2" IsChecked="{Binding World.DownedSanta, Mode=TwoWay}" />
+            </UniformGrid>
+
+            <TextBlock Classes="section" Text="天柱" />
+
+            <UniformGrid Columns="2">
+                <CheckBox Content="日耀" Margin="0,2" IsChecked="{Binding World.DownedCelestialSolar, Mode=TwoWay}" />
+                <CheckBox Content="星云" Margin="0,2" IsChecked="{Binding World.DownedCelestialNebula, Mode=TwoWay}" />
+                <CheckBox Content="星旋" Margin="0,2" IsChecked="{Binding World.DownedCelestialVortex, Mode=TwoWay}" />
+                <CheckBox Content="星尘" Margin="0,2" IsChecked="{Binding World.DownedCelestialStardust, Mode=TwoWay}" />
+                <CheckBox Content="日耀进行中" Margin="0,2" IsChecked="{Binding World.CelestialSolarActive, Mode=TwoWay}" />
+                <CheckBox Content="星云进行中" Margin="0,2" IsChecked="{Binding World.CelestialNebulaActive, Mode=TwoWay}" />
+                <CheckBox Content="星旋进行中" Margin="0,2" IsChecked="{Binding World.CelestialVortexActive, Mode=TwoWay}" />
+                <CheckBox Content="星尘进行中" Margin="0,2" IsChecked="{Binding World.CelestialStardustActive, Mode=TwoWay}" />
+            </UniformGrid>
+
+            <TextBlock Classes="section" Text="背景与风格" />
+
+            <UniformGrid Columns="2">
+                <CheckBox Content="蘑菇背景" Margin="0,2" IsChecked="{Binding World.MushroomBg, Mode=TwoWay}" />
+                <CheckBox Content="地狱背景" Margin="0,2" IsChecked="{Binding World.UnderworldBg, Mode=TwoWay}" />
+                <CheckBox Content="树背景 1" Margin="0,2" IsChecked="{Binding World.BgTree, Mode=TwoWay}" />
+                <CheckBox Content="树背景 2" Margin="0,2" IsChecked="{Binding World.BgTree2, Mode=TwoWay}" />
+                <CheckBox Content="树背景 3" Margin="0,2" IsChecked="{Binding World.BgTree3, Mode=TwoWay}" />
+                <CheckBox Content="树背景 4" Margin="0,2" IsChecked="{Binding World.BgTree4, Mode=TwoWay}" />
+                <CheckBox Content="腐化背景" Margin="0,2" IsChecked="{Binding World.BgCorruption, Mode=TwoWay}" />
+                <CheckBox Content="猩红背景" Margin="0,2" IsChecked="{Binding World.BgCrimson, Mode=TwoWay}" />
+                <CheckBox Content="丛林背景" Margin="0,2" IsChecked="{Binding World.BgJungle, Mode=TwoWay}" />
+                <CheckBox Content="雪原背景" Margin="0,2" IsChecked="{Binding World.BgSnow, Mode=TwoWay}" />
+                <CheckBox Content="神圣背景" Margin="0,2" IsChecked="{Binding World.BgHallow, Mode=TwoWay}" />
+                <CheckBox Content="沙漠背景" Margin="0,2" IsChecked="{Binding World.BgDesert, Mode=TwoWay}" />
+                <CheckBox Content="海洋背景" Margin="0,2" IsChecked="{Binding World.BgOcean, Mode=TwoWay}" />
+            </UniformGrid>
+
+            <Grid ColumnDefinitions="96,*">
+                <TextBlock Grid.Column="0" Classes="label" Text="冰洞背景" />
+                <TextBox Grid.Column="1" Margin="0,2" Text="{Binding World.IceBackStyle, Mode=TwoWay}" />
+            </Grid>
+            <Grid ColumnDefinitions="96,*">
+                <TextBlock Grid.Column="0" Classes="label" Text="丛林洞背景" />
+                <TextBox Grid.Column="1" Margin="0,2" Text="{Binding World.JungleBackStyle, Mode=TwoWay}" />
+            </Grid>
+            <Grid ColumnDefinitions="96,*">
+                <TextBlock Grid.Column="0" Classes="label" Text="地狱背景样式" />
+                <TextBox Grid.Column="1" Margin="0,2" Text="{Binding World.HellBackStyle, Mode=TwoWay}" />
+            </Grid>
+
+            <TextBlock Classes="section" Text="地形细节" />
+
+            <Grid ColumnDefinitions="96,*">
+                <TextBlock Grid.Column="0" Classes="label" Text="树风格 1" />
+                <TextBox Grid.Column="1" Margin="0,2" Text="{Binding World.TreeStyle0, Mode=TwoWay}" />
+            </Grid>
+            <Grid ColumnDefinitions="96,*">
+                <TextBlock Grid.Column="0" Classes="label" Text="树风格 2" />
+                <TextBox Grid.Column="1" Margin="0,2" Text="{Binding World.TreeStyle1, Mode=TwoWay}" />
+            </Grid>
+            <Grid ColumnDefinitions="96,*">
+                <TextBlock Grid.Column="0" Classes="label" Text="树风格 3" />
+                <TextBox Grid.Column="1" Margin="0,2" Text="{Binding World.TreeStyle2, Mode=TwoWay}" />
+            </Grid>
+
+            <Grid ColumnDefinitions="96,*">
+                <TextBlock Grid.Column="0" Classes="label" Text="世界宽度" />
+                <TextBox Grid.Column="1" Margin="0,2" IsReadOnly="True" Text="{Binding World.TilesWide}" />
+            </Grid>
+            <Grid ColumnDefinitions="96,*">
+                <TextBlock Grid.Column="0" Classes="label" Text="地表最大高度" />
+                <TextBox Grid.Column="1" Margin="0,2" Text="{Binding World.MaxGroundLevel, Mode=TwoWay}" />
+            </Grid>
+            <Grid ColumnDefinitions="96,*">
+                <TextBlock Grid.Column="0" Classes="label" Text="洞穴最大深度" />
+                <TextBox Grid.Column="1" Margin="0,2" Text="{Binding World.MaxCavernLevel, Mode=TwoWay}" />
+            </Grid>
+            <Grid ColumnDefinitions="96,*">
+                <TextBlock Grid.Column="0" Classes="label" Text="安全地层" />
+                <TextBox Grid.Column="1" Margin="0,2" Text="{Binding World.SafeGroundLayers, Mode=TwoWay}" />
+            </Grid>
+            <Grid ColumnDefinitions="96,*">
+                <TextBlock Grid.Column="0" Classes="label" Text="树 1 X" />
+                <TextBox Grid.Column="1" Margin="0,2" Text="{Binding World.TreeX0, Mode=TwoWay}" />
+            </Grid>
+            <Grid ColumnDefinitions="96,*">
+                <TextBlock Grid.Column="0" Classes="label" Text="树 2 X" />
+                <TextBox Grid.Column="1" Margin="0,2" Text="{Binding World.TreeX1, Mode=TwoWay}" />
+            </Grid>
+            <Grid ColumnDefinitions="96,*">
+                <TextBlock Grid.Column="0" Classes="label" Text="树 3 X" />
+                <TextBox Grid.Column="1" Margin="0,2" Text="{Binding World.TreeX2, Mode=TwoWay}" />
+            </Grid>
+            <Grid ColumnDefinitions="96,*">
+                <TextBlock Grid.Column="0" Classes="label" Text="洞穴背景 1 X" />
+                <TextBox Grid.Column="1" Margin="0,2" Text="{Binding World.CaveBackX0, Mode=TwoWay}" />
+            </Grid>
+            <Grid ColumnDefinitions="96,*">
+                <TextBlock Grid.Column="0" Classes="label" Text="洞穴背景 2 X" />
+                <TextBox Grid.Column="1" Margin="0,2" Text="{Binding World.CaveBackX1, Mode=TwoWay}" />
+            </Grid>
+            <Grid ColumnDefinitions="96,*">
+                <TextBlock Grid.Column="0" Classes="label" Text="洞穴背景 3 X" />
+                <TextBox Grid.Column="1" Margin="0,2" Text="{Binding World.CaveBackX2, Mode=TwoWay}" />
+            </Grid>
+
+            <TextBlock Classes="section" Text="内容统计" />
+
+            <Grid ColumnDefinitions="96,*">
+                <TextBlock Grid.Column="0" Classes="label" Text="箱子" />
+                <TextBlock Grid.Column="1" Classes="value" Text="{Binding ChestCountText}" />
+            </Grid>
+
+            <Grid ColumnDefinitions="96,*">
+                <TextBlock Grid.Column="0" Classes="label" Text="告示牌" />
+                <TextBlock Grid.Column="1" Classes="value" Text="{Binding SignCountText}" />
+            </Grid>
+
+            <Grid ColumnDefinitions="96,*">
+                <TextBlock Grid.Column="0" Classes="label" Text="图格实体" />
+                <TextBlock Grid.Column="1" Classes="value" Text="{Binding TileEntityCountText}" />
+            </Grid>
+
+            <Grid ColumnDefinitions="96,*">
+                <TextBlock Grid.Column="0" Classes="label" Text="NPC" />
+                <TextBlock Grid.Column="1" Classes="value" Text="{Binding NpcCountText}" />
+            </Grid>
+
+            <Grid ColumnDefinitions="96,*">
+                <TextBlock Grid.Column="0" Classes="label" Text="上次保存" />
+                <TextBlock Grid.Column="1" Classes="value" Text="{Binding LastSaveText}" />
+            </Grid>
+        </StackPanel>
+    </ScrollViewer>
 </UserControl>

@@ -10,6 +10,9 @@ public interface IRasterTileCache : IDisposable
 
     void SetPixelDirty(int x, int y);
 
+    /// <summary>把一个方块矩形标脏.</summary>
+    void SetWorldRegionDirty(int x, int y, int width, int height);
+
     int TileSizeX { get; }
     int TileSizeY { get; }
 

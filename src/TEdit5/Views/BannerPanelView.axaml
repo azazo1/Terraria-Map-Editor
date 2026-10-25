@@ -1,0 +1,50 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:TEdit5.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="440" d:DesignHeight="600"
+             x:Class="TEdit5.Views.BannerPanelView"
+             x:CompileBindings="False">
+    <!-- 移植自 TEdit/View/Sidebar/BannerEditor.xaml, 图标预览与导入功能暂缺 -->
+    <DockPanel Background="#2D2D2D">
+
+        <TextBlock DockPanel.Dock="Top" Text="旗帜" FontSize="16" FontWeight="SemiBold" Margin="8,6" />
+
+        <UniformGrid DockPanel.Dock="Top" Columns="4" Margin="4,0">
+            <Button Content="导入" Margin="2" Padding="6,4" IsEnabled="False"
+                    ToolTip.Tip="需要选择世界文件, 暂未接线" />
+            <Button Content="补满" Margin="2" Padding="6,4" Command="{Binding Banners.MaxOutCommand}" />
+            <Button Content="保存" Margin="2" Padding="6,4" Command="{Binding Banners.SaveCommand}" />
+            <Button Content="清零" Margin="2" Padding="6,4" Command="{Binding Banners.ResetCommand}" />
+        </UniformGrid>
+
+        <Grid DockPanel.Dock="Top" Margin="2" ColumnDefinitions="Auto,*,Auto,Auto,Auto">
+            <TextBlock Grid.Column="0" Text="过滤" VerticalAlignment="Center" Margin="4,0" />
+            <TextBox Grid.Column="1" Margin="2" Text="{Binding Banners.FilterText, Mode=TwoWay}" />
+            <TextBlock Grid.Column="2" Text="分类" VerticalAlignment="Center" Margin="4,0" />
+            <CheckBox Grid.Column="4" Content="只看已拥有" VerticalAlignment="Center" Margin="4,0"
+                      IsChecked="{Binding Banners.OnlyOwned, Mode=TwoWay}" />
+            <ComboBox Grid.Column="3" Width="110" Margin="2"
+                      ItemsSource="{Binding Banners.Categories}"
+                      SelectedItem="{Binding Banners.SelectedCategory, Mode=TwoWay}" />
+        </Grid>
+
+        <ListBox ItemsSource="{Binding Banners.Entries}" Background="Transparent" BorderThickness="0">
+            <ListBox.ItemTemplate>
+                <DataTemplate x:DataType="vm:BannerEntry">
+                    <Grid ColumnDefinitions="*,90,80,70">
+                        <TextBlock Grid.Column="0" Text="{Binding Name}" Margin="2" VerticalAlignment="Center"
+                                   TextTrimming="CharacterEllipsis" />
+                        <NumericUpDown Grid.Column="1" Minimum="0" Maximum="9999" Increment="1" FormatString="0" Margin="2"
+                                       Value="{Binding Count, Mode=TwoWay}" />
+                        <TextBlock Grid.Column="2" Margin="2" VerticalAlignment="Center" Foreground="#AAAAAA" FontSize="11"
+                                   Text="{Binding Kills, StringFormat='击杀 {0}'}" />
+                        <TextBlock Grid.Column="3" Margin="2" VerticalAlignment="Center" Foreground="#AAAAAA" FontSize="11"
+                                   Text="{Binding Category}" />
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </DockPanel>
+</UserControl>

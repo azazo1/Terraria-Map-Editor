@@ -1,0 +1,226 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:TEdit5.ViewModels"
+             xmlns:ctl="using:TEdit5.Controls"
+             x:Class="TEdit5.Views.PlayerEditorView"
+             x:DataType="vm:DocumentViewModel"
+             x:CompileBindings="False">
+    <UserControl.Resources>
+        <ctl:ItemIconConverter x:Key="ItemIcon" />
+    </UserControl.Resources>
+    <DockPanel Margin="6">
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,6">
+            <Button Content="打开玩家文件" Padding="8,4" Click="OnOpenClick" />
+            <Button Content="另存为" Padding="8,4" Margin="6,0,0,0" Click="OnSaveClick" />
+            <Button Content="重新载入" Padding="8,4" Margin="6,0,0,0" Click="OnReloadClick" />
+            <TextBlock Margin="8,0,0,0" VerticalAlignment="Center" Foreground="#AAAAAA"
+                       Text="{Binding Player.FileName}" />
+        </StackPanel>
+
+        <Grid DockPanel.Dock="Top" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="90,*,Auto" Margin="2">
+            <Image Grid.Row="0" Grid.Column="2" Grid.RowSpan="11" Width="96" Height="128" Margin="8,0,0,0"
+                   Stretch="Uniform" Source="{Binding Player.PreviewBitmap}" />
+            <TextBlock Grid.Row="0" Grid.Column="0" Text="名字" Margin="2" Foreground="#AAAAAA" />
+            <TextBox Grid.Row="0" Grid.Column="1" Margin="2" Padding="4,2"
+                     Text="{Binding Player.Name, Mode=TwoWay}" />
+            <TextBlock Grid.Row="1" Grid.Column="0" Text="难度" Margin="2" Foreground="#AAAAAA" />
+            <ComboBox Grid.Row="1" Grid.Column="1" Margin="2" MinWidth="140"
+                      SelectedIndex="{Binding Player.Difficulty, Mode=TwoWay}">
+                <ComboBoxItem Content="经典" />
+                <ComboBoxItem Content="中核" />
+                <ComboBoxItem Content="硬核" />
+                <ComboBoxItem Content="旅行" />
+            </ComboBox>
+            <TextBlock Grid.Row="2" Grid.Column="0" Text="游戏时间" Margin="2" Foreground="#AAAAAA" />
+            <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding Player.PlayTimeText}" Margin="2" />
+            <TextBlock Grid.Row="3" Grid.Column="0" Text="生命" Margin="2" Foreground="#AAAAAA" />
+            <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal" Margin="2">
+                <NumericUpDown Minimum="0" Maximum="1000" Increment="20" FormatString="0" Width="120"
+                               Value="{Binding Player.StatLife, Mode=TwoWay}" />
+                <TextBlock Text="/" Margin="6,0" VerticalAlignment="Center" />
+                <NumericUpDown Minimum="0" Maximum="1000" Increment="20" FormatString="0" Width="120"
+                               Value="{Binding Player.StatLifeMax, Mode=TwoWay}" />
+            </StackPanel>
+            <TextBlock Grid.Row="4" Grid.Column="0" Text="魔力" Margin="2" Foreground="#AAAAAA" />
+            <StackPanel Grid.Row="4" Grid.Column="1" Orientation="Horizontal" Margin="2">
+                <NumericUpDown Minimum="0" Maximum="400" Increment="20" FormatString="0" Width="120"
+                               Value="{Binding Player.StatMana, Mode=TwoWay}" />
+                <TextBlock Text="/" Margin="6,0" VerticalAlignment="Center" />
+                <NumericUpDown Minimum="0" Maximum="400" Increment="20" FormatString="0" Width="120"
+                               Value="{Binding Player.StatManaMax, Mode=TwoWay}" />
+            </StackPanel>
+            <TextBlock Grid.Row="5" Grid.Column="0" Text="队伍" Margin="2" Foreground="#AAAAAA" />
+            <ComboBox Grid.Row="5" Grid.Column="1" Margin="2" MinWidth="140"
+                      SelectedIndex="{Binding Player.Team, Mode=TwoWay}">
+                <ComboBoxItem Content="无队伍" />
+                <ComboBoxItem Content="红队" />
+                <ComboBoxItem Content="绿队" />
+                <ComboBoxItem Content="蓝队" />
+                <ComboBoxItem Content="黄队" />
+                <ComboBoxItem Content="粉队" />
+            </ComboBox>
+            <TextBlock Grid.Row="6" Grid.Column="0" Text="外观" Margin="2" Foreground="#AAAAAA" />
+            <StackPanel Grid.Row="6" Grid.Column="1" Orientation="Horizontal" Margin="2">
+                <NumericUpDown Minimum="0" Maximum="300" Increment="1" FormatString="0" Width="100"
+                               Value="{Binding Player.Hair, Mode=TwoWay}" />
+                <ComboBox MinWidth="130" Margin="8,0,0,0"
+                          SelectedIndex="{Binding Player.SkinVariant, Mode=TwoWay}">
+                    <ComboBoxItem Content="肤色 0 (男)" />
+                    <ComboBoxItem Content="肤色 1 (男)" />
+                    <ComboBoxItem Content="肤色 2 (男)" />
+                    <ComboBoxItem Content="肤色 3 (男)" />
+                    <ComboBoxItem Content="肤色 4 (女)" />
+                    <ComboBoxItem Content="肤色 5 (女)" />
+                    <ComboBoxItem Content="肤色 6 (女)" />
+                    <ComboBoxItem Content="肤色 7 (女)" />
+                </ComboBox>
+                <TextBlock Margin="8,0,0,0" VerticalAlignment="Center" Foreground="#AAAAAA"
+                           Text="{Binding Player.HairText}" />
+            </StackPanel>
+            <TextBlock Grid.Row="8" Grid.Column="0" Text="旅程" Margin="2" Foreground="#AAAAAA" />
+            <TextBlock Grid.Row="8" Grid.Column="1" Text="{Binding Player.JourneySummary}" Margin="2" TextWrapping="Wrap" />
+            <TextBlock Grid.Row="9" Grid.Column="0" Text="能力" Margin="2" Foreground="#AAAAAA" />
+            <StackPanel Grid.Row="9" Grid.Column="1" Orientation="Horizontal" Margin="2">
+                <CheckBox Content="无敌" IsChecked="{Binding Player.IsGodMode, Mode=TwoWay}" Margin="0,0,10,0" />
+                <CheckBox Content="时间冻结" IsChecked="{Binding Player.IsTimeFrozen, Mode=TwoWay}" Margin="0,0,10,0" />
+                <TextBlock Text="时间流速" VerticalAlignment="Center" Foreground="#AAAAAA" Margin="0,0,6,0" />
+                <NumericUpDown Minimum="0" Maximum="1" Increment="0.1" FormatString="0.00" Width="110"
+                               Value="{Binding Player.TimeSpeed, Mode=TwoWay}" />
+            </StackPanel>
+            <TextBlock Grid.Row="10" Grid.Column="0" Text="研究" Margin="2" Foreground="#AAAAAA" />
+            <ListBox Grid.Row="10" Grid.Column="1" Margin="2" MinHeight="80" MaxHeight="140"
+                     Background="Transparent" BorderThickness="0"
+                     ItemsSource="{Binding Player.SacrificeRows}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid ColumnDefinitions="120,110,*">
+                            <TextBlock Grid.Column="0" Text="{Binding Key}" Margin="2" VerticalAlignment="Center" />
+                            <NumericUpDown Grid.Column="1" Minimum="0" Maximum="9999" Increment="1" FormatString="0"
+                                           Margin="2" Value="{Binding Count, Mode=TwoWay}" />
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <TextBlock Grid.Row="7" Grid.Column="0" Text="配色" Margin="2" Foreground="#AAAAAA" />
+            <WrapPanel Grid.Row="7" Grid.Column="1" Margin="2">
+                <StackPanel Orientation="Horizontal" Margin="0,0,10,4">
+                    <TextBlock Text="头发" Width="32" Foreground="#AAAAAA" VerticalAlignment="Center" />
+                    <TextBox Width="88" Padding="4,2" Text="{Binding Player.HairColorHex, Mode=TwoWay}" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,0,10,4">
+                    <TextBlock Text="皮肤" Width="32" Foreground="#AAAAAA" VerticalAlignment="Center" />
+                    <TextBox Width="88" Padding="4,2" Text="{Binding Player.SkinColorHex, Mode=TwoWay}" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,0,10,4">
+                    <TextBlock Text="眼睛" Width="32" Foreground="#AAAAAA" VerticalAlignment="Center" />
+                    <TextBox Width="88" Padding="4,2" Text="{Binding Player.EyeColorHex, Mode=TwoWay}" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,0,10,4">
+                    <TextBlock Text="上衣" Width="32" Foreground="#AAAAAA" VerticalAlignment="Center" />
+                    <TextBox Width="88" Padding="4,2" Text="{Binding Player.ShirtColorHex, Mode=TwoWay}" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,0,10,4">
+                    <TextBlock Text="内衣" Width="32" Foreground="#AAAAAA" VerticalAlignment="Center" />
+                    <TextBox Width="88" Padding="4,2" Text="{Binding Player.UnderShirtColorHex, Mode=TwoWay}" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,0,10,4">
+                    <TextBlock Text="裤子" Width="32" Foreground="#AAAAAA" VerticalAlignment="Center" />
+                    <TextBox Width="88" Padding="4,2" Text="{Binding Player.PantsColorHex, Mode=TwoWay}" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,0,10,4">
+                    <TextBlock Text="鞋" Width="34" Foreground="#AAAAAA" VerticalAlignment="Center" />
+                    <TextBox Width="88" Padding="4,2" Text="{Binding Player.ShoeColorHex, Mode=TwoWay}" />
+                </StackPanel>
+            </WrapPanel>
+        </Grid>
+
+        <Grid DockPanel.Dock="Bottom" RowDefinitions="Auto,Auto,*" Margin="0,8,0,0">
+            <TextBlock Grid.Row="0" Text="银行" FontWeight="Bold" Margin="2" />
+            <ListBox Grid.Row="1" Margin="2" MinHeight="60" Background="Transparent" BorderThickness="0"
+                     ItemsSource="{Binding Player.BankRows}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid ColumnDefinitions="20,32,86,*,82,70">
+                            <Image Grid.Column="0" Width="16" Height="16" Margin="2" Stretch="Uniform"
+                                   Source="{Binding NetId, Converter={StaticResource ItemIcon}, ConverterParameter=Item}" />
+                            <TextBlock Grid.Column="1" Text="{Binding Slot}" Margin="2" Foreground="#888888" />
+                            <NumericUpDown Grid.Column="2" Minimum="0" Maximum="6000" Increment="1" FormatString="0"
+                                           Margin="2,0" Value="{Binding NetId, Mode=TwoWay}" />
+                            <TextBlock Grid.Column="3" Text="{Binding Name}" Margin="2" TextTrimming="CharacterEllipsis" />
+                            <NumericUpDown Grid.Column="4" Minimum="0" Maximum="9999" Increment="1" FormatString="0"
+                                           Margin="2,0" Value="{Binding Stack, Mode=TwoWay}" />
+                            <NumericUpDown Grid.Column="5" Minimum="0" Maximum="255" Increment="1" FormatString="0"
+                                           Margin="2,0" Value="{Binding PrefixId, Mode=TwoWay}" />
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
+
+        <Grid DockPanel.Dock="Bottom" RowDefinitions="Auto,Auto,*" Margin="0,8,0,0">
+            <TextBlock Grid.Row="0" Text="增益" FontWeight="Bold" Margin="2" />
+            <ListBox Grid.Row="1" Margin="2" MinHeight="60" Background="Transparent" BorderThickness="0"
+                     ItemsSource="{Binding Player.BuffRows}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid ColumnDefinitions="40,120,80">
+                            <TextBlock Grid.Column="0" Text="{Binding Slot}" Margin="2" Foreground="#888888" />
+                            <TextBlock Grid.Column="1" Text="{Binding Type, StringFormat='增益 {0}'}" Margin="2" />
+                            <TextBlock Grid.Column="2" Text="{Binding Time}" Margin="2" Foreground="#AAAAAA" />
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
+
+        <Grid RowDefinitions="Auto,Auto,*,Auto,*" Margin="0,8,0,0">
+            <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="2">
+                <TextBlock Text="物品栏" FontWeight="Bold" />
+
+            </StackPanel>
+            <ListBox Grid.Row="1" Margin="2" MinHeight="100" Background="Transparent" BorderThickness="0"
+                     ItemsSource="{Binding Player.InventoryRows}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid ColumnDefinitions="20,32,86,*,82,70">
+                            <Image Grid.Column="0" Width="16" Height="16" Margin="2" Stretch="Uniform"
+                                   Source="{Binding NetId, Converter={StaticResource ItemIcon}, ConverterParameter=Item}" />
+                            <TextBlock Grid.Column="1" Text="{Binding Slot}" Margin="2" Foreground="#888888" />
+                            <NumericUpDown Grid.Column="2" Minimum="0" Maximum="6000" Increment="1" FormatString="0"
+                                           Margin="2,0" Value="{Binding NetId, Mode=TwoWay}" />
+                            <TextBlock Grid.Column="3" Text="{Binding Name}" Margin="2" TextTrimming="CharacterEllipsis" />
+                            <NumericUpDown Grid.Column="4" Minimum="0" Maximum="9999" Increment="1" FormatString="0"
+                                           Margin="2,0" Value="{Binding Stack, Mode=TwoWay}" />
+                            <NumericUpDown Grid.Column="5" Minimum="0" Maximum="255" Increment="1" FormatString="0"
+                                           Margin="2,0" Value="{Binding PrefixId, Mode=TwoWay}" />
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+            <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="2,8,0,2">
+                <TextBlock Text="装备栏" FontWeight="Bold" />
+
+            </StackPanel>
+            <ListBox Grid.Row="4" Margin="2" MinHeight="80" Background="Transparent" BorderThickness="0"
+                     ItemsSource="{Binding Player.ArmorRows}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid ColumnDefinitions="20,32,86,*,82,70">
+                            <Image Grid.Column="0" Width="16" Height="16" Margin="2" Stretch="Uniform"
+                                   Source="{Binding NetId, Converter={StaticResource ItemIcon}, ConverterParameter=Item}" />
+                            <TextBlock Grid.Column="1" Text="{Binding Slot}" Margin="2" Foreground="#888888" />
+                            <NumericUpDown Grid.Column="2" Minimum="0" Maximum="6000" Increment="1" FormatString="0"
+                                           Margin="2,0" Value="{Binding NetId, Mode=TwoWay}" />
+                            <TextBlock Grid.Column="3" Text="{Binding Name}" Margin="2" TextTrimming="CharacterEllipsis" />
+                            <NumericUpDown Grid.Column="4" Minimum="0" Maximum="9999" Increment="1" FormatString="0"
+                                           Margin="2,0" Value="{Binding Stack, Mode=TwoWay}" />
+                            <NumericUpDown Grid.Column="5" Minimum="0" Maximum="255" Increment="1" FormatString="0"
+                                           Margin="2,0" Value="{Binding PrefixId, Mode=TwoWay}" />
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
+    </DockPanel>
+</UserControl>
